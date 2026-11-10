@@ -11,6 +11,9 @@
 
 </div>
 
+**Сайт проекта:** <https://mosloboev444-hue.github.io/tv-cinema-launcher/> ·
+**Скачать APK:** [релизы](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
+
 ![Экран «Кино»](screenshots/home-cinema.png)
 
 Форк лаунчера [CleanYourTV](https://github.com/Gathin23/cleanyourtv) 3.4 с двумя домашними экранами и

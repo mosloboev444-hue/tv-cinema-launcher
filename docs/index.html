@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TV Cinema Launcher — домашний экран для Android TV</title>
+<meta name="description" content="Лаунчер для Android TV: карусель приложений по кругу, стеклянный док, погода, VPN, два экрана. Форк CleanYourTV. 588 КБ, без рекламы и аккаунтов.">
+<meta property="og:title" content="TV Cinema Launcher — домашний экран для Android TV">
+<meta property="og:description" content="Карусель приложений по кругу, стеклянный док, погода и VPN. Форк CleanYourTV. 588 КБ, без рекламы.">
+<meta property="og:image" content="img/social-preview.png">
+<meta property="og:type" content="website">
+<style>
+  :root {
+    --bg:#0a0b0f; --card:#14161d; --card2:#101219; --line:#242833;
+    --text:#eef2f8; --dim:#9aa6b8; --gold:#ffd166; --gold2:#ff9f43; --blue:#6ed6ff;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; background:
+      radial-gradient(1100px 500px at 75% -10%, #2a1f08 0%, transparent 60%),
+      radial-gradient(900px 480px at 5% 8%, #0d2430 0%, transparent 55%),
+      var(--bg); color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; line-height:1.55; }
+  .wrap { max-width:1040px; margin:0 auto; padding:34px 20px 64px; }
+  header { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .logo { width:58px; height:58px; border-radius:16px;
+          background:linear-gradient(135deg,var(--gold),var(--gold2)); color:#141006;
+          font-weight:900; font-size:26px; display:flex; align-items:center; justify-content:center;
+          box-shadow:0 8px 30px rgba(255,159,67,.25); }
+  h1 { font-size:34px; margin:0; letter-spacing:-0.6px; }
+  .sub { color:var(--dim); margin:6px 0 26px; font-size:17px; }
+  .cta { display:flex; gap:12px; flex-wrap:wrap; margin:26px 0 34px; }
+  .btn { display:inline-block; padding:14px 22px; border-radius:12px; text-decoration:none; font-weight:600; }
+  .btn-primary { background:linear-gradient(135deg,var(--gold),var(--gold2)); color:#17120a; }
+  .btn-primary:hover { filter:brightness(1.06); }
+  .btn-ghost { border:1px solid #2c3342; color:var(--text); }
+  .btn-ghost:hover { border-color:#3d475c; }
+  img.shot { width:100%; border-radius:16px; border:1px solid var(--line); display:block;
+             box-shadow:0 24px 70px rgba(0,0,0,.55); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin:26px 0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; }
+  .card h3 { margin:0 0 8px; font-size:16px; }
+  .card p { margin:0; color:var(--dim); font-size:14px; }
+  .split { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:22px 0; }
+  @media (max-width:760px){ .split { grid-template-columns:1fr; } }
+  .cap { color:var(--dim); font-size:13.5px; margin-top:9px; }
+  .cap b { color:var(--text); font-weight:600; }
+  h2 { margin-top:48px; font-size:23px; letter-spacing:-0.3px; }
+  h2 .num { color:var(--gold); margin-right:8px; }
+  code { background:#12151d; padding:2px 6px; border-radius:6px; font-size:13px; color:#e9eef7; }
+  pre { background:#10131a; border:1px solid var(--line); padding:16px; border-radius:12px; overflow:auto; }
+  pre code { background:none; padding:0; color:#dbe3ef; }
+  a { color:var(--blue); }
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:14.5px; }
+  th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); }
+  th { color:var(--dim); font-weight:600; font-size:13px; text-transform:uppercase; letter-spacing:.04em; }
+  td.good { color:var(--gold); font-weight:700; }
+  .chips { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:18px 0; }
+  @media (max-width:760px){ .chips { grid-template-columns:1fr; } }
+  .chipcard { background:var(--card2); border:1px solid var(--line); border-radius:14px; padding:12px; }
+  .chipcard img { width:100%; display:block; border-radius:10px; }
+  .note { background:#14161d; border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:10px;
+          padding:14px 16px; color:var(--dim); font-size:14px; margin:18px 0; }
+  footer { margin-top:56px; color:var(--dim); font-size:14px; border-top:1px solid var(--line); padding-top:22px; }
+  footer a { color:var(--dim); }
+  footer a:hover { color:var(--text); }
+  .pills { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .pill { font-size:12px; color:var(--dim); border:1px solid var(--line); border-radius:999px; padding:5px 10px; }
+  .ok { color:#7ee2a8; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">C</div>
+    <div>
+      <h1>TV Cinema Launcher</h1>
+      <div class="sub">Домашний экран для Android TV · карусель приложений · стеклянный док · погода · VPN</div>
+    </div>
+  </header>
+
+  <div class="cta">
+    <a class="btn btn-primary" href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest/download/CleanYourTV-TwoScreens-3.4.apk">Скачать APK · 588 КБ</a>
+    <a class="btn btn-ghost" href="https://github.com/mosloboev444-hue/tv-cinema-launcher">Исходники на GitHub</a>
+    <a class="btn btn-ghost" href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/tag/v3.4">Что нового в 3.4</a>
+  </div>
+
+  <img class="shot" src="img/cinema.webp" alt="Экран «Кино»: часы, погода, круглые кнопки, стеклянный док и карусель приложений">
+
+  <div class="pills">
+    <span class="pill">Android TV 8.0+</span>
+    <span class="pill">versionCode 13 · 3.4</span>
+    <span class="pill">MIT</span>
+    <span class="pill">без рекламы</span>
+    <span class="pill">без аккаунтов</span>
+    <span class="pill">подпись как у CleanYourTV</span>
+  </div>
+
+  <h2><span class="num">01</span>Что внутри</h2>
+  <div class="grid">
+    <div class="card"><h3>Карусель по кругу</h3><p>Все установленные приложения в кольце: 7 плиток на экране, конец списка плавно переходит в начало.</p></div>
+    <div class="card"><h3>Два экрана</h3><p>«Кино» из видео и «Классика» — прежний вид CleanYourTV 3.2. Переключение с пульта, выбор запоминается.</p></div>
+    <div class="card"><h3>Погода в шапке</h3><p>Стеклянная плашка: иконка, температура, короткое описание. Город по публичному IP, кэш 30 минут.</p></div>
+    <div class="card"><h3>Кнопка VPN</h3><p>Круглая кнопка: зелёная — VPN включён, красная — выключен. Открывает настроенное приложение VPN.</p></div>
+    <div class="card"><h3>Звуки карусели</h3><p>Мягкий «тик» при смене фокуса и глубокий «тук» подтверждения. Синтезируются кодом, без файлов.</p></div>
+    <div class="card"><h3>Плавность</h3><p>5.46 % «дёрганых» кадров, медиана 11 мс, p90 28 мс, 0 пропущенных vsync. Карусель не пересчитывает разметку.</p></div>
+  </div>
+
+  <h2><span class="num">02</span>Два домашних экрана</h2>
+  <div class="split">
+    <div>
+      <img class="shot" src="img/cinema.webp" alt="Экран «Кино»">
+      <div class="cap"><b>«Кино»</b> — часы и дата в углу, погода, круглые кнопки, морозный док на фотообоях, бесконечная карусель.</div>
+    </div>
+    <div>
+      <img class="shot" src="img/classic.webp" alt="Экран «Классика»">
+      <div class="cap"><b>«Классика»</b> — прежний домашний экран CleanYourTV 3.2: приветствие, док-карточки, строки приложений.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">03</span>Плашка с названием</h2>
+  <p>Над выбранной плиткой — нейтральное название в стиле экрана. Два варианта, переключение там же в меню:</p>
+  <div class="chips">
+    <div class="chipcard"><img src="img/chip-glass.webp" alt="Плашка «Стекло»"><div class="cap"><b>«Стекло»</b> — тёмная стеклянная плашка (по умолчанию)</div></div>
+    <div class="chipcard"><img src="img/chip-none.webp" alt="Плашка «Без фона»"><div class="cap"><b>«Без фона»</b> — только название с мягкой тенью</div></div>
+  </div>
+
+  <h2><span class="num">04</span>Переключение экранов</h2>
+  <div class="split">
+    <div>
+      <p>Удерживайте <b>ОК</b> на кнопке «Настройки» в шапке — откроется меню:</p>
+      <ul>
+        <li><b>«Плашка: …»</b> — стиль названия (только на экране «Кино»);</li>
+        <li><b>«Экран: Кино / Классика»</b> — смена домашнего экрана;</li>
+        <li>там же — настройки главного экрана и карточки приложений.</li>
+      </ul>
+      <p>Выбор запоминается и переживает перезагрузку телевизора.</p>
+    </div>
+    <div>
+      <img class="shot" src="img/menu.webp" alt="Меню переключения экранов">
+      <div class="cap">Меню открывается удержанием ОК на «Настройки».</div>
+    </div>
+  </div>
+
+  <h2><span class="num">05</span>Погода и приватность</h2>
+  <div class="split">
+    <div>
+      <p>Погода берётся без API-ключей: город определяется по публичному IP (<code>ipwho.is</code>), прогноз — из
+      <code>wttr.in</code>, резерв — <code>api.met.no</code>. Значение кэшируется на 30 минут и показывается сразу
+      при возврате на Home.</p>
+      <div class="note">В лаунчер добавлено разрешение <b>INTERNET</b> — только для этого запроса. Больше сетевых
+      обращений нет: ни телеметрии, ни аналитики, ни фоновых сервисов. Без сети остаётся последнее значение.</div>
+    </div>
+    <div>
+      <img class="shot" src="img/weather.webp" alt="Погода в шапке и фокус на кнопке">
+      <div class="cap">Плашка погоды и фокус в шапке.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">06</span>Плавность</h2>
+  <table>
+    <tr><th>Метрика</th><th>Было (сетка)</th><th>Стало (карусель)</th></tr>
+    <tr><td>«Дёрганые» кадры</td><td>36.5 %</td><td class="good">5.46 %</td></tr>
+    <tr><td>Медиана кадра</td><td>22 мс</td><td class="good">11 мс</td></tr>
+    <tr><td>90-й перцентиль</td><td>46 мс</td><td class="good">28 мс</td></tr>
+    <tr><td>Пропущенные vsync</td><td>2</td><td class="good">0</td></tr>
+  </table>
+  <div class="cap">Замеры на Philips 50PUS8057/60 (Android TV 14), 12 переключений карусели, <code>dumpsys gfxinfo</code>.</div>
+
+  <h2><span class="num">07</span>Установка</h2>
+  <p>Скачайте APK и поставьте по ADB (или с флешки любым файловым менеджером):</p>
+  <pre><code>adb connect 192.168.0.39:5555
+adb install -r CleanYourTV-TwoScreens-3.4.apk</code></pre>
+  <div class="note">APK подписан тем же debug-ключом, что прежние сборки CleanYourTV 3.2/3.4 — ставится обновлением
+  поверх: роль «Домой», настройки и данные сохраняются. Нужен Android TV 8.0+ (minSdk 26, targetSdk 34).</div>
+
+  <h2><span class="num">08</span>Сборка из исходников</h2>
+  <pre><code>git clone https://github.com/mosloboev444-hue/tv-cinema-launcher
+cd tv-cinema-launcher/launcher
+echo "sdk.dir=/путь/к/Android/Sdk" &gt; local.properties
+./gradlew assembleRelease</code></pre>
+  <p class="cap">Нужны JDK 17+ и Android SDK 34. Патчи к чистому upstream 3.4 — в папке <code>patch/</code>.</p>
+
+  <footer>
+    <p><b>MIT</b> · основа — <a href="https://github.com/Gathin23/cleanyourtv">CleanYourTV</a> © 2026 Gathin (MIT).<br>
+    Обои: <a href="https://wallhaven.cc/w/d6yz6j">Wallhaven</a>, права у правообладателей. Плитка караоке и VPN-гейт —
+    из <a href="https://github.com/mosloboev444-hue/android-tv-youtube-vpn-karaoke">android-tv-youtube-vpn-karaoke</a>.</p>
+    <p><a href="https://github.com/mosloboev444-hue/tv-cinema-launcher">GitHub</a> ·
+       <a href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases">Релизы</a> ·
+       <a href="https://github.com/mosloboev444-hue/tv-cinema-launcher/blob/main/README.md">README</a> ·
+       <a href="https://github.com/mosloboev444-hue/tv-cinema-launcher/blob/main/LICENSE">Лицензия</a></p>
+    <p>Другие проекты: <a href="https://github.com/mosloboev444-hue/slimhome">SlimHome</a> ·
+       <a href="https://github.com/mosloboev444-hue/slimtube">SlimTube</a> ·
+       <a href="https://github.com/mosloboev444-hue/slimiptv">SlimIPTV</a> ·
+       <a href="https://github.com/mosloboev444-hue/slimvpn">SlimVPN</a> ·
+       <a href="https://github.com/mosloboev444-hue/slimtv-suite">SlimTV Suite</a></p>
+  </footer>
+
+</div>
+</body>
+</html>

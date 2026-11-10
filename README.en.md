@@ -11,6 +11,9 @@
 
 </div>
 
+**Project site:** <https://mosloboev444-hue.github.io/tv-cinema-launcher/> ·
+**Download APK:** [releases](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
+
 ![Cinema screen](screenshots/home-cinema.png)
 
 A fork of the [CleanYourTV](https://github.com/Gathin23/cleanyourtv) 3.4 launcher with two home screens and
