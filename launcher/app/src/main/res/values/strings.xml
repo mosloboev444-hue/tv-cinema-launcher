@@ -160,9 +160,61 @@
     <string name="clock_format_24">24-hour</string>
     <!-- The hold-OK Settings menu's screen switch (ScreenProfile): the Home screen that is on now. -->
     <string name="screen_profile_cinema">Screen: Cinema</string>
+    <string name="screen_profile_universal">Screen: Universal</string>
     <string name="screen_profile_classic">Screen: Classic</string>
     <!-- The name badge above the focused app on the cinema screen (hold OK on Settings to switch). -->
     <string name="chip_style_title">Name style</string>
     <string name="chip_style_glass">Glass</string>
     <string name="chip_style_none">No background</string>
-        </resources>
+        
+    <!-- Universal screen (Compose launcher, third home screen). -->
+    <string name="uni_app_name">TV Launcher</string>
+    <string name="uni_voice_hint">Click to speak</string>
+    <string name="uni_search_unavailable">Search is not available on this TV</string>
+    <string name="uni_voice_not_found">Voice assistant not found</string>
+    <string name="uni_favorites">Favorites</string>
+    <string name="uni_all_apps">All apps</string>
+    <string name="uni_favorites_hint">Hold OK on an app to open its menu and add it here</string>
+    <string name="uni_menu_open">Open</string>
+    <string name="uni_menu_add_fav">Add to favorites</string>
+    <string name="uni_menu_remove_fav">Remove from favorites</string>
+    <string name="uni_menu_move_left">Move left</string>
+    <string name="uni_menu_move_right">Move right</string>
+    <string name="uni_menu_app_info">App info</string>
+    <string name="uni_settings_title">Launcher settings</string>
+    <string name="uni_setting_wallpaper">Wallpaper</string>
+    <string name="uni_setting_sound_theme">Sound theme</string>
+    <string name="uni_setting_volume">Sound volume</string>
+    <string name="uni_setting_screensaver">Clock screensaver</string>
+    <string name="uni_wp_lake">Mountain lake</string>
+    <string name="uni_wp_sunset">Sunset</string>
+    <string name="uni_wp_night">Night</string>
+    <string name="uni_wp_auto">Auto (changes every 10 min)</string>
+    <string name="uni_sound_bells">Bells</string>
+    <string name="uni_sound_soft">Soft</string>
+    <string name="uni_sound_crystal">Crystal</string>
+    <string name="uni_vol_off">Off</string>
+    <string name="uni_vol_low">Low</string>
+    <string name="uni_vol_medium">Medium</string>
+    <string name="uni_vol_high">High</string>
+    <string name="uni_off">Off</string>
+    <string name="uni_minutes_fmt">%1$d min</string>
+    <string name="uni_close">Close</string>
+    <string name="uni_notif_title">Notifications</string>
+    <string name="uni_notif_access_help">To see notifications, grant the launcher access. If your TV has no such setting, run on your computer:\nadb shell cmd notification allow_listener %1$s</string>
+    <string name="uni_notif_open_access">Open access settings</string>
+    <string name="uni_notif_no_screen">This TV has no such screen, use the adb command</string>
+    <string name="uni_notif_empty">No new notifications</string>
+    <string name="uni_vpn_title">Default VPN</string>
+    <string name="uni_vpn_desc">This app opens when you press the VPN button. Long-press OK on the button to change it.</string>
+    <string name="uni_vpn_none_found">No VPN apps found. Choose “Show all apps”.</string>
+    <string name="uni_vpn_default_mark">✓ default</string>
+    <string name="uni_vpn_only">VPN apps only</string>
+    <string name="uni_vpn_show_all">Show all apps</string>
+    <string name="uni_vpn_system">System VPN settings</string>
+    <string name="uni_vpn_set_toast">Default VPN: %1$s</string>
+    <string name="uni_screen_title">Home screen</string>
+    <string name="uni_screen_cinema">Cinema</string>
+    <string name="uni_screen_classic">Classic</string>
+    <string name="uni_screen_universal">Universal</string>
+</resources>

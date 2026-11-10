@@ -156,9 +156,61 @@
     <string name="clock_format_12">12-часовой</string>
     <string name="clock_format_24">24-часовой</string>
     <string name="screen_profile_cinema">Экран: Кино</string>
+    <string name="screen_profile_universal">Экран: Универсальный</string>
     <string name="screen_profile_classic">Экран: Классика</string>
     <!-- The name badge above the focused app on the cinema screen (hold OK on Settings to switch). -->
     <string name="chip_style_title">Плашка</string>
     <string name="chip_style_glass">Стекло</string>
     <string name="chip_style_none">Без фона</string>
-        </resources>
+        
+    <!-- Universal screen (Compose launcher, third home screen). -->
+    <string name="uni_app_name">TV Launcher</string>
+    <string name="uni_voice_hint">Нажмите, чтобы говорить</string>
+    <string name="uni_search_unavailable">Поиск недоступен на этом телевизоре</string>
+    <string name="uni_voice_not_found">Голосовой помощник не найден</string>
+    <string name="uni_favorites">Избранное</string>
+    <string name="uni_all_apps">Все приложения</string>
+    <string name="uni_favorites_hint">Удерживайте OK на приложении, чтобы открыть меню и добавить его сюда</string>
+    <string name="uni_menu_open">Открыть</string>
+    <string name="uni_menu_add_fav">Добавить в избранное</string>
+    <string name="uni_menu_remove_fav">Убрать из избранного</string>
+    <string name="uni_menu_move_left">Сдвинуть влево</string>
+    <string name="uni_menu_move_right">Сдвинуть вправо</string>
+    <string name="uni_menu_app_info">О приложении</string>
+    <string name="uni_settings_title">Настройки лаунчера</string>
+    <string name="uni_setting_wallpaper">Обои</string>
+    <string name="uni_setting_sound_theme">Тема звуков</string>
+    <string name="uni_setting_volume">Громкость звуков</string>
+    <string name="uni_setting_screensaver">Заставка с часами</string>
+    <string name="uni_wp_lake">Горы и озеро</string>
+    <string name="uni_wp_sunset">Закат</string>
+    <string name="uni_wp_night">Ночь</string>
+    <string name="uni_wp_auto">Авто (смена каждые 10 мин)</string>
+    <string name="uni_sound_bells">Колокольчики</string>
+    <string name="uni_sound_soft">Мягкие</string>
+    <string name="uni_sound_crystal">Кристалл</string>
+    <string name="uni_vol_off">Выкл</string>
+    <string name="uni_vol_low">Тихо</string>
+    <string name="uni_vol_medium">Средне</string>
+    <string name="uni_vol_high">Громко</string>
+    <string name="uni_off">Выкл</string>
+    <string name="uni_minutes_fmt">%1$d мин</string>
+    <string name="uni_close">Закрыть</string>
+    <string name="uni_notif_title">Уведомления</string>
+    <string name="uni_notif_access_help">Чтобы видеть уведомления, выдайте лаунчеру доступ. Если в настройках телевизора такого пункта нет, выполните на компьютере:\nadb shell cmd notification allow_listener %1$s</string>
+    <string name="uni_notif_open_access">Открыть настройки доступа</string>
+    <string name="uni_notif_no_screen">На этом телевизоре нет такого экрана, используйте команду adb</string>
+    <string name="uni_notif_empty">Новых уведомлений нет</string>
+    <string name="uni_vpn_title">VPN по умолчанию</string>
+    <string name="uni_vpn_desc">Это приложение будет открываться по кнопке VPN. Сменить выбор можно долгим нажатием OK на кнопке.</string>
+    <string name="uni_vpn_none_found">VPN-приложения не найдены. Выберите «Показать все приложения».</string>
+    <string name="uni_vpn_default_mark">✓ по умолчанию</string>
+    <string name="uni_vpn_only">Только VPN-приложения</string>
+    <string name="uni_vpn_show_all">Показать все приложения</string>
+    <string name="uni_vpn_system">Системные настройки VPN</string>
+    <string name="uni_vpn_set_toast">VPN по умолчанию: %1$s</string>
+    <string name="uni_screen_title">Домашний экран</string>
+    <string name="uni_screen_cinema">Кино</string>
+    <string name="uni_screen_classic">Классика</string>
+    <string name="uni_screen_universal">Универсальный</string>
+</resources>

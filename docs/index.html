@@ -77,22 +77,23 @@
     <div class="logo">C</div>
     <div>
       <h1>TV Cinema Launcher</h1>
-      <div class="sub">Домашний экран для Android TV · карусель приложений · стеклянный док · погода · VPN</div>
+      <div class="sub">Три домашних экрана · карусель · DeepSeek-помощник · погода · VPN</div>
       <div class="lang"><a href="en/">English version →</a></div>
     </div>
   </header>
 
   <div class="cta">
-    <a class="btn btn-primary" href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest/download/CleanYourTV-TwoScreens-3.4.apk">Скачать APK · 588 КБ</a>
+    <a class="btn btn-primary" href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest/download/CleanYourTV-ThreeScreens-4.0.apk">Скачать APK · 2.1 МБ</a>
     <a class="btn btn-ghost" href="https://github.com/mosloboev444-hue/tv-cinema-launcher">Исходники на GitHub</a>
-    <a class="btn btn-ghost" href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/tag/v3.4">Что нового в 3.4</a>
+    <a class="btn btn-ghost" href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/tag/v4.0">Что нового в 4.0</a>
   </div>
 
   <img class="shot" src="img/cinema.webp" alt="Экран «Кино»: часы, погода, круглые кнопки, стеклянный док и карусель приложений">
 
   <div class="pills">
     <span class="pill">Android TV 8.0+</span>
-    <span class="pill">versionCode 13 · 3.4</span>
+    <span class="pill">versionCode 14 · 4.0</span>
+    <span class="pill">DeepSeek</span>
     <span class="pill">MIT</span>
     <span class="pill">без рекламы</span>
     <span class="pill">без аккаунтов</span>
@@ -106,10 +107,12 @@
     <div class="card"><h3>Погода в шапке</h3><p>Стеклянная плашка: иконка, температура, короткое описание. Город по публичному IP, кэш 30 минут.</p></div>
     <div class="card"><h3>Кнопка VPN</h3><p>Круглая кнопка: зелёная — VPN включён, красная — выключен. Открывает настроенное приложение VPN.</p></div>
     <div class="card"><h3>Звуки карусели</h3><p>Мягкий «тик» при смене фокуса и глубокий «тук» подтверждения. Синтезируются кодом, без файлов.</p></div>
+    <div class="card"><h3>Третий экран</h3><p>«Универсальный» в духе Google TV: фотообои, «Избранное» и «Все приложения», кнопка VPN.</p></div>
+    <div class="card"><h3>DeepSeek-помощник</h3><p>Микрофон в верхнем баре: голосовые команды, ответы DeepSeek и озвучка. Ключ хранится только на ТВ.</p></div>
     <div class="card"><h3>Плавность</h3><p>5.46 % «дёрганых» кадров, медиана 11 мс, p90 28 мс, 0 пропущенных vsync. Карусель не пересчитывает разметку.</p></div>
   </div>
 
-  <h2><span class="num">02</span>Два домашних экрана</h2>
+  <h2><span class="num">02</span>Три домашних экрана</h2>
   <div class="split">
     <div>
       <img class="shot" src="img/cinema.webp" alt="Экран «Кино»">
@@ -119,22 +122,59 @@
       <img class="shot" src="img/classic.webp" alt="Экран «Классика»">
       <div class="cap"><b>«Классика»</b> — прежний домашний экран CleanYourTV 3.2: приветствие, док-карточки, строки приложений.</div>
     </div>
+    <div>
+      <img class="shot" src="img/universal-home.webp" alt="Экран «Универсальный»">
+      <div class="cap"><b>«Универсальный»</b> — Google-TV-стиль: фотообои, «Избранное» и «Все приложения», DeepSeek-помощник.</div>
+    </div>
   </div>
 
-  <h2><span class="num">03</span>Карусель в движении</h2>
+  <h2><span class="num">03</span>Универсальный экран</h2>
+  <p>Экран в духе Google TV на Jetpack Compose: фотообои, минималистичный верхний бар и два ряда карточек.
+  Работает на любом Android TV 8.0+ и приставке, масштабируется под HD, Full HD и 4K.</p>
+  <img class="shot" src="img/universal-home.webp" alt="Универсальный экран с горами и озером" loading="lazy">
+  <div class="split">
+    <div>
+      <img class="shot" src="img/universal-picker.webp" alt="Выбор домашнего экрана" loading="lazy">
+      <div class="cap">Кнопка-домик в баре открывает выбор домашнего экрана.</div>
+    </div>
+    <div>
+      <p><b>Верхний бар:</b> микрофон DeepSeek, домой, VPN (зелёная/красная), сеть, уведомления, поиск,
+      настройки лаунчера, настройки TV, погода и часы.</p>
+      <p><b>Ряды:</b> «Избранное» и «Все приложения»; OK открывает приложение, долгое OK — меню (в избранное,
+      порядок, сведения). В настройках: обои (озеро / закат / ночь / автосмена), звуки, громкость, заставка.</p>
+    </div>
+  </div>
+
+  <h2><span class="num">04</span>DeepSeek-помощник</h2>
+  <p>Микрофон в верхнем баре открывает помощника. Речь распознаётся на телевизоре, ответ показывается и
+  <b>озвучивается</b>. Локальные команды работают без сети: «Открой YouTube», «Включи VPN», «Погода»,
+  «Громче», «Кино», «Классика». Всё остальное уходит в <b>DeepSeek</b> (<code>deepseek-chat</code>).</p>
+  <div class="split">
+    <div>
+      <img class="shot" src="img/universal-deepseek.webp" alt="Ответ DeepSeek на телевизоре" loading="lazy">
+      <div class="cap">Вопрос голосом или текстом — ответ DeepSeek и озвучка TTS.</div>
+    </div>
+    <div>
+      <img class="shot" src="img/universal-listening.webp" alt="Помощник слушает" loading="lazy">
+      <div class="cap">Ключ DeepSeek хранится только на телевизоре: палитра → «DeepSeek: ключ» или файл
+      <code>deepseek_key.txt</code> через adb. В APK и репозиторий он не попадает.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">05</span>Карусель в движении</h2>
   <p>Приложения идут по кругу: конец списка плавно переходит в начало, выбранная плитка увеличивается и
   получает белое кольцо. Запись с телевизора (YouTube → Кинопоиск → VK Видео → RuTube):</p>
   <img class="shot" src="img/carousel.gif" alt="Карусель приложений в движении: YouTube, Кинопоиск, VK Видео, RuTube" loading="lazy">
   <div class="cap">Записано на Philips 50PUS8057/60; вживую анимация плавнее — 12 fps здесь ограничены GIF.</div>
 
-  <h2><span class="num">04</span>Плашка с названием</h2>
+  <h2><span class="num">06</span>Плашка с названием</h2>
   <p>Над выбранной плиткой — нейтральное название в стиле экрана. Два варианта, переключение там же в меню:</p>
   <div class="chips">
     <div class="chipcard"><img src="img/chip-glass.webp" alt="Плашка «Стекло»"><div class="cap"><b>«Стекло»</b> — тёмная стеклянная плашка (по умолчанию)</div></div>
     <div class="chipcard"><img src="img/chip-none.webp" alt="Плашка «Без фона»"><div class="cap"><b>«Без фона»</b> — только название с мягкой тенью</div></div>
   </div>
 
-  <h2><span class="num">05</span>Переключение экранов</h2>
+  <h2><span class="num">07</span>Переключение экранов</h2>
   <div class="split">
     <div>
       <p>Удерживайте <b>ОК</b> на кнопке «Настройки» в шапке — откроется меню:</p>
@@ -151,7 +191,7 @@
     </div>
   </div>
 
-  <h2><span class="num">06</span>Погода и приватность</h2>
+  <h2><span class="num">08</span>Погода и приватность</h2>
   <div class="split">
     <div>
       <p>Погода берётся без API-ключей: город определяется по публичному IP (<code>ipwho.is</code>), прогноз — из
@@ -166,7 +206,7 @@
     </div>
   </div>
 
-  <h2><span class="num">07</span>Плавность</h2>
+  <h2><span class="num">09</span>Плавность</h2>
   <table>
     <tr><th>Метрика</th><th>Было (сетка)</th><th>Стало (карусель)</th></tr>
     <tr><td>«Дёрганые» кадры</td><td>36.5 %</td><td class="good">5.46 %</td></tr>
@@ -176,14 +216,14 @@
   </table>
   <div class="cap">Замеры на Philips 50PUS8057/60 (Android TV 14), 12 переключений карусели, <code>dumpsys gfxinfo</code>.</div>
 
-  <h2><span class="num">08</span>Установка</h2>
+  <h2><span class="num">10</span>Установка</h2>
   <p>Скачайте APK и поставьте по ADB (или с флешки любым файловым менеджером):</p>
   <pre><code>adb connect 192.168.0.39:5555
-adb install -r CleanYourTV-TwoScreens-3.4.apk</code></pre>
+adb install -r CleanYourTV-ThreeScreens-4.0.apk</code></pre>
   <div class="note">APK подписан тем же debug-ключом, что прежние сборки CleanYourTV 3.2/3.4 — ставится обновлением
   поверх: роль «Домой», настройки и данные сохраняются. Нужен Android TV 8.0+ (minSdk 26, targetSdk 34).</div>
 
-  <h2><span class="num">09</span>Сборка из исходников</h2>
+  <h2><span class="num">11</span>Сборка из исходников</h2>
   <pre><code>git clone https://github.com/mosloboev444-hue/tv-cinema-launcher
 cd tv-cinema-launcher/launcher
 echo "sdk.dir=/путь/к/Android/Sdk" &gt; local.properties
@@ -193,7 +233,9 @@ echo "sdk.dir=/путь/к/Android/Sdk" &gt; local.properties
   <footer>
     <p><b>MIT</b> · основа — <a href="https://github.com/Gathin23/cleanyourtv">CleanYourTV</a> © 2026 Gathin (MIT).<br>
     Обои: <a href="https://wallhaven.cc/w/d6yz6j">Wallhaven</a>, права у правообладателей. Плитка караоке и VPN-гейт —
-    из <a href="https://github.com/mosloboev444-hue/android-tv-youtube-vpn-karaoke">android-tv-youtube-vpn-karaoke</a>.</p>
+    из <a href="https://github.com/mosloboev444-hue/android-tv-youtube-vpn-karaoke">android-tv-youtube-vpn-karaoke</a>.
+    Голосовой помощник — <a href="https://platform.deepseek.com/">DeepSeek API</a>, идея из
+    <a href="https://github.com/mosloboev444-hue/deepseek-alisa">deepseek-alisa</a>.</p>
     <p><a href="https://github.com/mosloboev444-hue/tv-cinema-launcher">GitHub</a> ·
        <a href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases">Релизы</a> ·
        <a href="https://github.com/mosloboev444-hue/tv-cinema-launcher/blob/main/README.md">README</a> ·

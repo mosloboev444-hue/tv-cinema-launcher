@@ -283,6 +283,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private int greetingColor;
     /** The day the petal shower last played, so it greets the first Home of each day only. */
     private static LocalDate lastPetalShower;
+    /** Set when this activity only routed Home to the universal screen and finishes itself in onCreate. */
+    private boolean routedAway;
     /** boot_to_live_tv: open the Live TV app on the first Home of each boot. */
     private boolean bootToLiveTv;
     /** The input in the Live TV tile's launch_actions ("input:<id>"), opened at power-on instead of the Live TV app. */
@@ -466,6 +468,16 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Third Home screen: the universal Compose launcher (any Android TV or box). It lives in its own
+        // activity, so this one hands over before inflating anything of the cinema/classic screens.
+        if (ScreenProfile.isUniversal(this)) {
+            // Nothing below ran, so every cleanup in onPause/onStop/onDestroy would touch fields that were never
+            // created: mark the short route and skip the normal lifecycle work.
+            routedAway = true;
+            startActivity(new Intent(this, com.gathin.tvhome.universal.UniversalActivity.class));
+            finish();
+            return;
+        }
         setContentView(R.layout.activity_main);
         density = getResources().getDisplayMetrics().density;
         // config.xml, overlaid by config.json from a pushed theme (see Config and tools/theme.sh).
@@ -1082,6 +1094,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        if (routedAway) return;   // the universal-screen route: no views were created
         if (openLauncherSettingsIfAsked(intent)) return;
         if (openLibraryIfAsked(intent)) return;
         if (openInputsIfAsked(intent)) return;
@@ -1102,6 +1115,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onStart() {
         super.onStart();
+        if (routedAway) return;   // the universal-screen route: the activity never built its views
         stopped = false;
         started = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -1117,6 +1131,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onResume() {
         super.onResume();
+        if (routedAway) return;   // the universal-screen route: the activity never built its views
         resumed = true;
         // A festival that started or ended while Home was in the background: rebuild with or without it.
         if (festive != festival.active(LocalDate.now())) {
@@ -1326,6 +1341,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
+        if (routedAway) return;   // the universal-screen route: no views were created
         restartIdleClock();
     }
 
@@ -1337,6 +1353,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onPause() {
         super.onPause();
+        if (routedAway) return;   // the universal-screen route: the activity never built its views
         resumed = false;
         // No UP reaches a paused Home, so a vendor-key hold it saw go down would still open its app later.
         // Only Home's own share is dropped: a key service that saw the same DOWN keeps its hold.
@@ -1369,6 +1386,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onStop() {
         super.onStop();
+        if (routedAway) return;   // the universal-screen route: the activity never built its views
         started = false;
         unregisterReceiver(timeReceiver);
         clockRefresh.stop();
@@ -1414,6 +1432,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (routedAway) return;   // the universal-screen route: the activity never built its views
         RemoteKeys.release(this);
         cancelHoldOk();
         if (gameDay != null) gameDay.shutdown();
@@ -2860,6 +2879,30 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         weatherPill.setVisibility(View.VISIBLE);
     }
 
+    /** "Экран: Кино" for the hold-OK menu: the Home screen this launcher shows. */
+    private String screenProfileLabel() {
+        return getString(screenProfileName(ScreenProfile.current(this)));
+    }
+
+    private int screenProfileName(String screen) {
+        if (ScreenProfile.CLASSIC.equals(screen)) return R.string.screen_profile_classic;
+        if (ScreenProfile.UNIVERSAL.equals(screen)) return R.string.screen_profile_universal;
+        return R.string.screen_profile_cinema;
+    }
+
+    /** Cycles Кино → Классика → Универсальный; the universal one opens its own (Compose) activity. */
+    private void switchScreenProfile() {
+        String next = ScreenProfile.next(this);
+        ScreenProfile.setScreen(this, next);
+        Toast.makeText(this, getString(screenProfileName(next)), Toast.LENGTH_SHORT).show();
+        if (ScreenProfile.UNIVERSAL.equals(next)) {
+            startActivity(new Intent(this, com.gathin.tvhome.universal.UniversalActivity.class));
+            finish();
+        } else {
+            recreate();
+        }
+    }
+
     /** "Плашка: Стекло" for the hold-OK menu: the style of the name above the focused app. */
     private String chipStyleLabel() {
         return getString(R.string.chip_style_title) + ": "
@@ -3881,15 +3924,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         View panel = getLayoutInflater().inflate(R.layout.popup_inputs, root, false);
         LinearLayout rows = panel.findViewById(R.id.rows);
         PopupWindow popup = glassPopup(panel, (int) (200 * density));
-        // ScreenProfile: flips between the cinema Home and the classic one, both kept by this build.
         // Cinema screen only: the badge row makes sense where the badge exists.
         if (cinemaProfile) addSettingsMenuRow(rows, popup, chipStyleLabel(), this::cycleChipStyle);
-        addSettingsMenuRow(rows, popup, cinemaProfile ? R.string.screen_profile_cinema : R.string.screen_profile_classic, () -> {
-            boolean cinema = ScreenProfile.toggle(this);
-            Toast.makeText(this, getString(cinema ? R.string.screen_profile_cinema : R.string.screen_profile_classic),
-                    Toast.LENGTH_SHORT).show();
-            recreate();
-        });
+        // Three Home screens now: Кино → Классика → Универсальный → Кино.
+        addSettingsMenuRow(rows, popup, screenProfileLabel(), this::switchScreenProfile);
         if (!launcherSettingsButton) addSettingsMenuRow(rows, popup, R.string.launcher_settings, () -> startActivityForResult(
                 new Intent(this, LauncherSettingsActivity.class), LAUNCHER_SETTINGS_REQUEST));
         // Firmware that ships its own settings app next to the AOSP one (Xiaomi China is one): the

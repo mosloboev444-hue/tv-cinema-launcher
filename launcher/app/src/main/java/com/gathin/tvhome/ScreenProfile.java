@@ -27,24 +27,57 @@ final class ScreenProfile {
     static final String KEY = "screen_profile";
     static final String CINEMA = "cinema";
     static final String CLASSIC = "classic";
+    /** The third Home screen: the universal Compose launcher (works on any Android TV or box). */
+    static final String UNIVERSAL = "universal";
 
     private ScreenProfile() {
     }
 
-    /** The cinema look is the default: a fresh install opens the screen this launcher was built for. */
+    /** The chosen screen; unknown values fall back to the cinema one. */
+    static String current(Context ctx) {
+        String value = prefs(ctx).getString(KEY, CINEMA);
+        if (CLASSIC.equals(value)) return CLASSIC;
+        if (UNIVERSAL.equals(value)) return UNIVERSAL;
+        return CINEMA;
+    }
+
     static boolean isCinema(Context ctx) {
-        return !CLASSIC.equals(prefs(ctx).getString(KEY, CINEMA));
+        return CINEMA.equals(current(ctx));
+    }
+
+    static boolean isClassic(Context ctx) {
+        return CLASSIC.equals(current(ctx));
+    }
+
+    /** True when the universal (Compose) Home should be shown instead of this activity. */
+    static boolean isUniversal(Context ctx) {
+        return UNIVERSAL.equals(current(ctx));
+    }
+
+    /** Stores the screen choice; the caller restarts or recreates Home itself. */
+    static void setScreen(Context ctx, String screen) {
+        String value = CLASSIC.equals(screen) ? CLASSIC : UNIVERSAL.equals(screen) ? UNIVERSAL : CINEMA;
+        prefs(ctx).edit().putString(KEY, value).apply();
     }
 
     static void set(Context ctx, boolean cinema) {
-        prefs(ctx).edit().putString(KEY, cinema ? CINEMA : CLASSIC).apply();
+        setScreen(ctx, cinema ? CINEMA : CLASSIC);
     }
 
-    /** Flips the screen and returns whether the cinema one is now on. */
+    /** Flips between the two CleanYourTV screens and returns whether the cinema one is now on. */
     static boolean toggle(Context ctx) {
         boolean cinema = !isCinema(ctx);
         set(ctx, cinema);
         return cinema;
+    }
+
+    /** Next screen in the menu's cycle: Кино → Классика → Универсальный → Кино. */
+    static String next(Context ctx) {
+        switch (current(ctx)) {
+            case CLASSIC: return UNIVERSAL;
+            case UNIVERSAL: return CINEMA;
+            default: return CLASSIC;
+        }
     }
 
     private static SharedPreferences prefs(Context ctx) {
@@ -67,7 +100,7 @@ final class ScreenProfile {
                 }
             }
         }
-        JSONObject preset = isCinema(ctx) ? cinemaPreset() : classicPreset();
+        JSONObject preset = isClassic(ctx) ? classicPreset() : cinemaPreset();
         for (Iterator<String> it = preset.keys(); it.hasNext(); ) {
             String key = it.next();
             try {

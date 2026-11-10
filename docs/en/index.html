@@ -76,22 +76,23 @@
     <div class="logo">C</div>
     <div>
       <h1>TV Cinema Launcher</h1>
-      <div class="sub">An Android TV home screen · app carousel · frosted dock · weather · VPN</div>
+      <div class="sub">Three home screens · app carousel · DeepSeek assistant · weather · VPN</div>
       <div class="lang"><a href="../">Русская версия →</a></div>
     </div>
   </header>
 
   <div class="cta">
-    <a class="btn btn-primary" href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest/download/CleanYourTV-TwoScreens-3.4.apk">Download APK · 588 KB</a>
+    <a class="btn btn-primary" href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest/download/CleanYourTV-ThreeScreens-4.0.apk">Download APK · 2.1 MB</a>
     <a class="btn btn-ghost" href="https://github.com/mosloboev444-hue/tv-cinema-launcher">Source on GitHub</a>
-    <a class="btn btn-ghost" href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/tag/v3.4">What's new in 3.4</a>
+    <a class="btn btn-ghost" href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/tag/v4.0">What's new in 4.0</a>
   </div>
 
   <img class="shot" src="../img/cinema.webp" alt="Cinema screen: clock, weather, round buttons, frosted dock and the app carousel">
 
   <div class="pills">
     <span class="pill">Android TV 8.0+</span>
-    <span class="pill">versionCode 13 · 3.4</span>
+    <span class="pill">versionCode 14 · 4.0</span>
+    <span class="pill">DeepSeek</span>
     <span class="pill">MIT</span>
     <span class="pill">no ads</span>
     <span class="pill">no accounts</span>
@@ -105,10 +106,12 @@
     <div class="card"><h3>Weather in the header</h3><p>A glass chip: icon, temperature, short description. City by public IP, 30-minute cache.</p></div>
     <div class="card"><h3>VPN button</h3><p>A round button: green = VPN on, red = off. Opens the configured VPN app.</p></div>
     <div class="card"><h3>Carousel sounds</h3><p>A soft tick on focus change and a deeper confirm thud on OK. Synthesised in code, no audio files.</p></div>
+    <div class="card"><h3>Third screen</h3><p>“Universal” in the Google TV spirit: photo wallpaper, Favorites and All apps, a VPN pill.</p></div>
+    <div class="card"><h3>DeepSeek assistant</h3><p>Mic in the top bar: voice commands, DeepSeek answers and TTS. The key stays on the TV.</p></div>
     <div class="card"><h3>Smoothness</h3><p>5.46 % janky frames, 11 ms median, 28 ms p90, 0 missed vsync. The carousel never re-runs layout.</p></div>
   </div>
 
-  <h2><span class="num">02</span>Two home screens</h2>
+  <h2><span class="num">02</span>Three home screens</h2>
   <div class="split">
     <div>
       <img class="shot" src="../img/cinema.webp" alt="Cinema screen">
@@ -118,21 +121,58 @@
       <img class="shot" src="../img/classic.webp" alt="Classic screen">
       <div class="cap"><b>“Classic”</b> — the previous CleanYourTV 3.2 home: greeting, dock cards, app rows.</div>
     </div>
+    <div>
+      <img class="shot" src="../img/universal-home.webp" alt="Universal screen">
+      <div class="cap"><b>“Universal”</b> — Google TV style: photo wallpaper, Favorites and All apps, DeepSeek assistant.</div>
+    </div>
   </div>
 
-  <h2><span class="num">03</span>Carousel in motion</h2>
+  <h2><span class="num">03</span>Universal screen</h2>
+  <p>A Google TV style screen built with Jetpack Compose: photo wallpaper, a minimal top bar and two card rows.
+  Runs on any Android TV 8.0+ and TV box; scales for HD, Full HD and 4K.</p>
+  <img class="shot" src="../img/universal-home.webp" alt="Universal screen with mountains and a lake" loading="lazy">
+  <div class="split">
+    <div>
+      <img class="shot" src="../img/universal-picker.webp" alt="Home screen picker" loading="lazy">
+      <div class="cap">The home button in the top bar opens the screen picker.</div>
+    </div>
+    <div>
+      <p><b>Top bar:</b> DeepSeek mic, home, VPN (green/red), network, notifications, search, launcher settings,
+      TV settings, weather and the clock.</p>
+      <p><b>Rows:</b> “Favorites” and “All apps”; OK opens an app, long OK opens its menu. Settings: wallpapers
+      (lake / sunset / night / auto), sounds, volume, screensaver.</p>
+    </div>
+  </div>
+
+  <h2><span class="num">04</span>DeepSeek assistant</h2>
+  <p>The mic in the top bar opens the assistant. Speech is recognised on the TV, the answer is shown and
+  <b>spoken</b>. Launcher commands run without the network: “Open YouTube”, “Turn on VPN”, “Weather”, “Louder”,
+  “Cinema”, “Classic”. Everything else goes to <b>DeepSeek</b> (<code>deepseek-chat</code>).</p>
+  <div class="split">
+    <div>
+      <img class="shot" src="../img/universal-deepseek.webp" alt="DeepSeek answer on the TV" loading="lazy">
+      <div class="cap">Ask by voice or by typing — DeepSeek answers and TTS speaks it.</div>
+    </div>
+    <div>
+      <img class="shot" src="../img/universal-listening.webp" alt="Assistant listening" loading="lazy">
+      <div class="cap">The DeepSeek key lives only on the TV: palette → “DeepSeek: key”, or a
+      <code>deepseek_key.txt</code> file pushed with adb. It never goes into the APK or the repository.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">05</span>Carousel in motion</h2>
   <p>Apps go round in a ring: the end of the list eases into the beginning, the focused tile grows and gets a white ring. Recorded on the TV (YouTube → Kinopoisk → VK Video → RuTube):</p>
   <img class="shot" src="../img/carousel.gif" alt="App carousel in motion: YouTube, Kinopoisk, VK Video, RuTube" loading="lazy">
   <div class="cap">Recorded on a Philips 50PUS8057/60; it is smoother in person — 12 fps here is a GIF limit.</div>
 
-  <h2><span class="num">04</span>Name badge</h2>
+  <h2><span class="num">06</span>Name badge</h2>
   <p>Above the focused tile — a neutral name in the screen's own style. Two variants, switched in the same menu:</p>
   <div class="chips">
     <div class="chipcard"><img src="../img/chip-glass.webp" alt="Glass badge"><div class="cap"><b>“Glass”</b> — a dark glass chip (default)</div></div>
     <div class="chipcard"><img src="../img/chip-none.webp" alt="Text-only badge"><div class="cap"><b>“Text only”</b> — just the name with a soft shadow</div></div>
   </div>
 
-  <h2><span class="num">05</span>Switching screens</h2>
+  <h2><span class="num">07</span>Switching screens</h2>
   <div class="split">
     <div>
       <p>Hold <b>OK</b> on the “Settings” button in the header — a menu opens:</p>
@@ -149,7 +189,7 @@
     </div>
   </div>
 
-  <h2><span class="num">06</span>Weather and privacy</h2>
+  <h2><span class="num">08</span>Weather and privacy</h2>
   <div class="split">
     <div>
       <p>No API keys: the city comes from the public IP (<code>ipwho.is</code>), the forecast from
@@ -164,7 +204,7 @@
     </div>
   </div>
 
-  <h2><span class="num">07</span>Smoothness</h2>
+  <h2><span class="num">09</span>Smoothness</h2>
   <table>
     <tr><th>Metric</th><th>Before (grid)</th><th>After (carousel)</th></tr>
     <tr><td>Janky frames</td><td>36.5 %</td><td class="good">5.46 %</td></tr>
@@ -174,14 +214,14 @@
   </table>
   <div class="cap">Measured on a Philips 50PUS8057/60 (Android TV 14), 12 carousel turns, <code>dumpsys gfxinfo</code>.</div>
 
-  <h2><span class="num">08</span>Install</h2>
+  <h2><span class="num">10</span>Install</h2>
   <p>Download the APK and install it over ADB (or from a USB stick with any file manager):</p>
   <pre><code>adb connect 192.168.0.39:5555
-adb install -r CleanYourTV-TwoScreens-3.4.apk</code></pre>
+adb install -r CleanYourTV-ThreeScreens-4.0.apk</code></pre>
   <div class="note">The APK is signed with the same debug key as previous CleanYourTV 3.2/3.4 builds, so it installs
   as an update: the Home role, settings and data are kept. Requires Android TV 8.0+ (minSdk 26, targetSdk 34).</div>
 
-  <h2><span class="num">09</span>Build from source</h2>
+  <h2><span class="num">11</span>Build from source</h2>
   <pre><code>git clone https://github.com/mosloboev444-hue/tv-cinema-launcher
 cd tv-cinema-launcher/launcher
 echo "sdk.dir=/path/to/Android/Sdk" &gt; local.properties
@@ -191,7 +231,9 @@ echo "sdk.dir=/path/to/Android/Sdk" &gt; local.properties
   <footer>
     <p><b>MIT</b> · based on <a href="https://github.com/Gathin23/cleanyourtv">CleanYourTV</a> © 2026 Gathin (MIT).<br>
     Wallpapers: <a href="https://wallhaven.cc/w/d6yz6j">Wallhaven</a>, rights belong to their owners. The karaoke tile and
-    VPN gate come from <a href="https://github.com/mosloboev444-hue/android-tv-youtube-vpn-karaoke">android-tv-youtube-vpn-karaoke</a>.</p>
+    VPN gate come from <a href="https://github.com/mosloboev444-hue/android-tv-youtube-vpn-karaoke">android-tv-youtube-vpn-karaoke</a>.
+    The voice assistant uses the <a href="https://platform.deepseek.com/">DeepSeek API</a>; the idea grew out of
+    <a href="https://github.com/mosloboev444-hue/deepseek-alisa">deepseek-alisa</a>.</p>
     <p><a href="https://github.com/mosloboev444-hue/tv-cinema-launcher">GitHub</a> ·
        <a href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases">Releases</a> ·
        <a href="https://github.com/mosloboev444-hue/tv-cinema-launcher/blob/main/README.en.md">README</a> ·

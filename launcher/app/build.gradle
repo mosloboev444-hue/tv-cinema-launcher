@@ -1,5 +1,8 @@
 plugins {
     id 'com.android.application'
+    // The third Home screen (universal) is the Compose launcher; the other two stay plain Java/XML.
+    id 'org.jetbrains.kotlin.android' version '2.0.20'
+    id 'org.jetbrains.kotlin.plugin.compose' version '2.0.20'
 }
 
 android {
@@ -13,8 +16,8 @@ android {
         applicationId providers.gradleProperty('launcherApplicationId').getOrElse('com.gathin.tvhome')
         minSdk 26
         targetSdk 34
-        versionCode 13
-        versionName '3.4'
+        versionCode 14
+        versionName '4.0'
     }
 
     buildTypes {
@@ -28,11 +31,19 @@ android {
         }
     }
 
+    buildFeatures {
+        compose = true
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
     packagingOptions {
         resources {
-            // Kotlin metadata pulled in by AndroidX's dependencies. This launcher is plain Java and never reads it;
-            // leaving it out saves about 14 KB of every install.
-            excludes += ['kotlin/**', 'META-INF/*.version', 'META-INF/*.kotlin_module', 'DebugProbesKt.bin']
+            // Kotlin metadata pulled in by AndroidX's dependencies is not read at runtime; the kotlin/**
+            // builtins are kept because Compose/Kotlin may need them.
+            excludes += ['META-INF/*.version', 'META-INF/*.kotlin_module', 'DebugProbesKt.bin']
         }
     }
 
@@ -45,6 +56,16 @@ android {
 dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
+    // Universal (third) Home screen: Jetpack Compose for TV.
+    implementation platform('androidx.compose:compose-bom:2024.09.03')
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.activity:activity-compose:1.9.2'
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.foundation:foundation'
+    implementation 'androidx.compose.animation:animation'
+    implementation 'androidx.compose.material:material-icons-extended'
+    implementation 'androidx.tv:tv-material:1.0.0'
+    implementation 'androidx.profileinstaller:profileinstaller:1.3.1'
     // Test only (never in the APK): plain JVM tests for the module card validators, src/test.
     testImplementation 'junit:junit:4.13.2'
 }
