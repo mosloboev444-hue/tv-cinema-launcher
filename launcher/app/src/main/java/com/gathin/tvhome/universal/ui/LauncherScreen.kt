@@ -1,5 +1,7 @@
 package com.gathin.tvhome.universal.ui
 
+import android.os.SystemClock
+
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -78,6 +80,8 @@ private fun LauncherContent() {
     var showVpnPicker by remember { mutableStateOf(false) }
     var showScreens by remember { mutableStateOf(false) }
     var showAssistant by remember { mutableStateOf(false) }
+    // Long-press on the VPN pill opens the picker; the key-up that follows must not also launch the app.
+    var vpnPickerOpenedAt by remember { mutableStateOf(0L) }
     var showKey by remember { mutableStateOf(false) }
     var launchAfterPick by remember { mutableStateOf(false) }
     // CleanYourTV's configured VPN app is the universal screen's default one, until changed here.
@@ -144,18 +148,24 @@ private fun LauncherContent() {
                 onScreens = { showScreens = true },
                 onAssistant = { showAssistant = true },
                 onVpn = {
-                    val p = defaultVpn
-                    if (p != null && apps.any { it.packageName == p }) launchApp(context, p)
-                    else { launchAfterPick = true; showVpnPicker = true }
+                    if (SystemClock.uptimeMillis() - vpnPickerOpenedAt > 1200) {
+                        val p = defaultVpn
+                        if (p != null && apps.any { it.packageName == p }) launchApp(context, p)
+                        else { launchAfterPick = true; showVpnPicker = true }
+                    }
                 },
-                onVpnLong = { launchAfterPick = false; showVpnPicker = true },
+                onVpnLong = {
+                    vpnPickerOpenedAt = SystemClock.uptimeMillis()
+                    launchAfterPick = false
+                    showVpnPicker = true
+                },
                 modifier = Modifier.align(Alignment.TopCenter).padding(horizontal = 32.dp, vertical = 28.dp),
             )
             Dock(
                 apps = apps,
                 favorites = favItems,
                 onMenu = { menuPkg = it },
-                modifier = Modifier.align(Alignment.BottomStart).padding(start = 48.dp, bottom = 32.dp),
+                modifier = Modifier.align(Alignment.BottomStart).padding(start = 40.dp, end = 24.dp, bottom = 32.dp),
             )
             if (LauncherState.screensaver) Screensaver(wallpaperIndex, weather)
         }

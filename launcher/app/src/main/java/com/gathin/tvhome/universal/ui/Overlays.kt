@@ -63,8 +63,16 @@ import kotlinx.coroutines.delay
 private fun rememberInitialFocus(): FocusRequester {
     val fr = remember { FocusRequester() }
     LaunchedEffect(Unit) {
-        delay(80)
-        try { fr.requestFocus() } catch (_: Exception) {}
+        // A dialog opened from a held OK cannot take focus while the key is still down (the launcher's own
+        // long-press on the VPN pill is exactly that case), so retry until the key is released.
+        repeat(14) {
+            delay(140)
+            try {
+                fr.requestFocus()
+                return@LaunchedEffect
+            } catch (_: Exception) {
+            }
+        }
     }
     return fr
 }

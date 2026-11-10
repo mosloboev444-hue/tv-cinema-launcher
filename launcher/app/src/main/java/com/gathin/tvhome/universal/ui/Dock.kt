@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -78,11 +79,17 @@ fun Dock(
 private fun AppRow(title: String, apps: List<AppItem>, emptyHint: String, onMenu: (String) -> Unit, firstTile: FocusRequester? = null) {
     val context = LocalContext.current
     Column(Modifier.fillMaxWidth()) {
-        Text(title, color = Color.White, fontSize = 20.sp, modifier = Modifier.padding(bottom = 10.dp))
+        Text(title, color = Color.White, fontSize = 20.sp,
+            modifier = Modifier.padding(start = 24.dp, bottom = 10.dp))
         if (apps.isEmpty() && emptyHint.isNotEmpty()) {
             Text(emptyHint, color = Color(0xCCFFFFFF), fontSize = 14.sp, modifier = Modifier.padding(vertical = 30.dp))
         }
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        // Content padding gives the focused card's white ring and 1.09x scale room at both ends of the row;
+        // without it the first and last cards are clipped by the row's viewport.
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 14.dp),
+        ) {
             items(apps, key = { "$title/${it.packageName}" }) { app ->
                 Surface(
                     onClick = { SoundFx.play(Sound.SELECT); launchApp(context, app.packageName) },
