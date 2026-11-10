@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -85,7 +87,7 @@ fun TopBar(
             PillButton(Icons.Default.Home) { onScreens() }
             // A held OK opens the VPN picker; it must open on release, or the held key's repeats end up in
             // the dialog and click its first row (see rememberTvOkGestures).
-            VpnPill(net, vpnOn, vpnLabel, onVpn, onVpnLong)
+            VpnPill(vpnOn = vpnOn || net.vpn, label = vpnLabel, onTap = onVpn, onLongPress = onVpnLong)
             PillButton(
                 icon = when (net.kind) {
                     NetKind.NONE -> Icons.Default.WifiOff
@@ -136,47 +138,48 @@ fun vpnSettingsIntent() = Intent(ACTION_VPN_SETTINGS)
 
 @OptIn(androidx.tv.material3.ExperimentalTvMaterial3Api::class)
 @Composable
-private fun VpnPill(net: NetStatus, vpnOn: Boolean, label: String, onTap: () -> Unit, onLongPress: () -> Unit) {
-    Surface(
-        onClick = { SoundFx.play(Sound.SELECT); onTap() },   // pointer/touch only; D-pad OK is handled below
-        shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(50)),
-        colors = ClickableSurfaceDefaults.colors(
-            containerColor = if (net.vpn || vpnOn) Color(0xFF2E7D32) else Color(0xFFC62828),
-            focusedContainerColor = if (net.vpn || vpnOn) Color(0xFF2E7D32) else Color(0xFFC62828),
-            contentColor = Color.White,
-            focusedContentColor = Color.White,
-        ),
-        border = ClickableSurfaceDefaults.border(
-            border = Border.None,
-            focusedBorder = Border(
-                border = androidx.compose.foundation.BorderStroke(3.dp, Color.White),
-                inset = 0.dp,
-                shape = RoundedCornerShape(50),
+private fun VpnPill(vpnOn: Boolean, label: String, onTap: () -> Unit, onLongPress: () -> Unit) {
+    // Same neutral pill as the other buttons: a key icon, white focus ring, no colour coding. The chosen
+    // VPN's name sits underneath in small print (with “вкл” while a tunnel is up).
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Surface(
+            onClick = { SoundFx.play(Sound.SELECT); onTap() },   // pointer/touch only; D-pad OK is handled below
+            shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(50)),
+            colors = ClickableSurfaceDefaults.colors(
+                containerColor = Color(0x66000000),
+                focusedContainerColor = Color(0x66000000),
+                contentColor = Color.White,
+                focusedContentColor = Color.White,
             ),
-        ),
-        scale = ClickableSurfaceDefaults.scale(focusedScale = 1.16f),
-        modifier = Modifier
-            .height(44.dp)
-            .rememberTvOkGestures(
-                onTap = { SoundFx.play(Sound.SELECT); onTap() },
-                onLongPress = onLongPress,
-            )
-            .onFocusChanged { if (it.hasFocus) SoundFx.play(Sound.FOCUS) },
-    ) {
-        Row(
-            Modifier.padding(horizontal = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(7.dp),
+            border = ClickableSurfaceDefaults.border(
+                border = Border.None,
+                focusedBorder = Border(
+                    border = androidx.compose.foundation.BorderStroke(3.dp, Color.White),
+                    inset = 0.dp,
+                    shape = RoundedCornerShape(50),
+                ),
+            ),
+            scale = ClickableSurfaceDefaults.scale(focusedScale = 1.16f),
+            modifier = Modifier
+                .size(44.dp)
+                .rememberTvOkGestures(
+                    onTap = { SoundFx.play(Sound.SELECT); onTap() },
+                    onLongPress = onLongPress,
+                )
+                .onFocusChanged { if (it.hasFocus) SoundFx.play(Sound.FOCUS) },
         ) {
-            Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(20.dp))
-            Text(
-                label,
-                color = Color.White,
-                fontSize = 13.sp,
-                maxLines = 1,
-                softWrap = false,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-            )
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(24.dp))
+            }
         }
+        Text(
+            if (vpnOn) "$label · вкл" else label,
+            color = Color(0xCCFFFFFF),
+            fontSize = 11.sp,
+            maxLines = 1,
+            softWrap = false,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            modifier = Modifier.widthIn(max = 96.dp),
+        )
     }
 }
