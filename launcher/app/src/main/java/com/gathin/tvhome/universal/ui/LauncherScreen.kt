@@ -103,6 +103,11 @@ private fun LauncherContent() {
     val vpnPackages = remember { findVpnPackages(context) }
     val vpnSourceLabel = if (vpnSource == VpnProfiles.SOURCE_BUILTIN) "Мой VPN (AmneziaWG)"
         else apps.find { it.packageName == vpnSource }?.label ?: vpnSource
+    // Short name inside the VPN capsule: the tunnel's own name or the selected app.
+    val vpnPillLabel = if (vpnSource == VpnProfiles.SOURCE_BUILTIN) "Мой VPN"
+        else (apps.find { it.packageName == vpnSource }?.label ?: vpnSource).let {
+            if (it.length > 12) it.take(12) + "…" else it
+        }
     var autoIdx by remember { mutableIntStateOf(0) }
 
     val weather by rememberWeather()
@@ -221,6 +226,7 @@ private fun LauncherContent() {
                 onScreens = { showScreens = true },
                 onAssistant = { showAssistant = true },
                 vpnOn = vpnConnected,
+                vpnLabel = vpnPillLabel,
                 onVpn = { toggleVpn() },
                 onVpnLong = {
                     vpnProfiles = VpnProfiles.list(context)

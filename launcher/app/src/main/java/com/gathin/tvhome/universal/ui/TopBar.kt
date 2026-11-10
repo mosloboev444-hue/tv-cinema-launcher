@@ -6,6 +6,7 @@ import android.provider.Settings
 import android.speech.RecognizerIntent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -62,6 +63,7 @@ fun TopBar(
     onAssistant: () -> Unit,
     onScreens: () -> Unit,
     vpnOn: Boolean,
+    vpnLabel: String,
     onVpn: () -> Unit,
     onVpnLong: () -> Unit,
     modifier: Modifier = Modifier,
@@ -83,7 +85,7 @@ fun TopBar(
             PillButton(Icons.Default.Home) { onScreens() }
             // A held OK opens the VPN picker; it must open on release, or the held key's repeats end up in
             // the dialog and click its first row (see rememberTvOkGestures).
-            VpnPill(net, vpnOn, onVpn, onVpnLong)
+            VpnPill(net, vpnOn, vpnLabel, onVpn, onVpnLong)
             PillButton(
                 icon = when (net.kind) {
                     NetKind.NONE -> Icons.Default.WifiOff
@@ -134,7 +136,7 @@ fun vpnSettingsIntent() = Intent(ACTION_VPN_SETTINGS)
 
 @OptIn(androidx.tv.material3.ExperimentalTvMaterial3Api::class)
 @Composable
-private fun VpnPill(net: NetStatus, vpnOn: Boolean, onTap: () -> Unit, onLongPress: () -> Unit) {
+private fun VpnPill(net: NetStatus, vpnOn: Boolean, label: String, onTap: () -> Unit, onLongPress: () -> Unit) {
     Surface(
         onClick = { SoundFx.play(Sound.SELECT); onTap() },   // pointer/touch only; D-pad OK is handled below
         shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(50)),
@@ -154,15 +156,27 @@ private fun VpnPill(net: NetStatus, vpnOn: Boolean, onTap: () -> Unit, onLongPre
         ),
         scale = ClickableSurfaceDefaults.scale(focusedScale = 1.16f),
         modifier = Modifier
-            .size(44.dp)
+            .height(44.dp)
             .rememberTvOkGestures(
                 onTap = { SoundFx.play(Sound.SELECT); onTap() },
                 onLongPress = onLongPress,
             )
             .onFocusChanged { if (it.hasFocus) SoundFx.play(Sound.FOCUS) },
     ) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(24.dp))
+        Row(
+            Modifier.padding(horizontal = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(7.dp),
+        ) {
+            Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(20.dp))
+            Text(
+                label,
+                color = Color.White,
+                fontSize = 13.sp,
+                maxLines = 1,
+                softWrap = false,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            )
         }
     }
 }
