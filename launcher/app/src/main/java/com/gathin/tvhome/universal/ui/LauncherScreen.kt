@@ -46,11 +46,9 @@ import com.gathin.tvhome.universal.data.findVpnPackages
 import com.gathin.tvhome.universal.data.isVideoMix
 import com.gathin.tvhome.universal.data.launchApp
 import com.gathin.tvhome.universal.data.loadApps
-import com.gathin.tvhome.universal.data.loadDefaultVpn
 import com.gathin.tvhome.universal.data.loadFavorites
 import com.gathin.tvhome.universal.data.loadSettings
 import com.gathin.tvhome.universal.data.rememberWeather
-import com.gathin.tvhome.universal.data.saveDefaultVpn
 import com.gathin.tvhome.universal.data.saveFavorites
 import com.gathin.tvhome.universal.data.saveSettings
 import com.gathin.tvhome.universal.data.toast
@@ -122,6 +120,7 @@ private fun LauncherContent() {
     }
 
     fun connectBuiltInVpn() {
+        if (vpnWorking) return
         val config = VpnProfiles.load(context)
         if (config == null) {
             toast(context, "Положите .conf в папку vpn приложения")
@@ -142,6 +141,7 @@ private fun LauncherContent() {
     }
 
     fun toggleBuiltInVpn() {
+        if (vpnWorking) return
         if (vpnConnected) {
             vpnWorking = true
             VpnController.disconnect { ok, error ->
@@ -226,6 +226,7 @@ private fun LauncherContent() {
                 onScreens = { showScreens = true },
                 onAssistant = { showAssistant = true },
                 vpnOn = vpnConnected,
+                vpnBuiltin = vpnSource == VpnProfiles.SOURCE_BUILTIN,
                 vpnLabel = vpnPillLabel,
                 onVpn = { toggleVpn() },
                 onVpnLong = {

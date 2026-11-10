@@ -65,6 +65,7 @@ fun TopBar(
     onAssistant: () -> Unit,
     onScreens: () -> Unit,
     vpnOn: Boolean,
+    vpnBuiltin: Boolean,
     vpnLabel: String,
     onVpn: () -> Unit,
     onVpnLong: () -> Unit,
@@ -87,7 +88,12 @@ fun TopBar(
             PillButton(Icons.Default.Home) { onScreens() }
             // A held OK opens the VPN picker; it must open on release, or the held key's repeats end up in
             // the dialog and click its first row (see rememberTvOkGestures).
-            VpnPill(vpnOn = vpnOn || net.vpn, label = vpnLabel, onTap = onVpn, onLongPress = onVpnLong)
+            VpnPill(
+                vpnOn = if (vpnBuiltin) vpnOn else net.vpn,
+                label = vpnLabel,
+                onTap = onVpn,
+                onLongPress = onVpnLong,
+            )
             PillButton(
                 icon = when (net.kind) {
                     NetKind.NONE -> Icons.Default.WifiOff

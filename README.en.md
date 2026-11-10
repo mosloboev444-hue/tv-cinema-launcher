@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
 [![Project site](https://img.shields.io/badge/site-online-6ed6ff?style=flat-square)](https://mosloboev444-hue.github.io/tv-cinema-launcher/)
-[![APK](https://img.shields.io/badge/APK-7.2%20MB-0aa1dd?style=flat-square)](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
+[![APK](https://img.shields.io/badge/APK-7.1%20MB-0aa1dd?style=flat-square)](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
 [![Android TV](https://img.shields.io/badge/Android%20TV-8.0%2B-3ddc84?style=flat-square)](https://developer.android.com/tv)
 [![DeepSeek](https://img.shields.io/badge/DeepSeek-voice-4d6bfe?style=flat-square)](https://platform.deepseek.com/)
 [![No ads](https://img.shields.io/badge/ads-none-critical?style=flat-square)](#)
@@ -40,7 +40,7 @@ Built for a Philips 50PUS8057/60 (Android TV 14) and tested on it. Works on Andr
 | **DeepSeek assistant** | mic on the universal screen: speech recognition, DeepSeek answers, TTS playback; launcher commands work offline |
 | **Endless carousel** | all installed apps in a ring, 7 tiles on screen, the last one eases into the first |
 | **Weather** | glass chip in the header: icon, temperature, short description; city by public IP, 30-minute cache |
-| **VPN button** | round button in the header: green = VPN on, red = off; opens the configured VPN app |
+| **VPN button** | Cinema/Classic: round button, green = VPN on, red = off, opens the configured app. Universal: a neutral capsule with the selected VPN's name that raises the built-in AmneziaWG |
 | **App name badge** | two neutral styles above the focused tile: “Glass” (dark glass chip) and “Text only” |
 | **Sounds** | soft carousel tick on focus change and a deeper confirm thud on OK; synthesised in code |
 | **Smoothness** | layout-free carousel: 5.46 % janky frames, 11 ms median, 28 ms p90, 0 missed vsync |
@@ -72,11 +72,11 @@ More: [weather/focus](screenshots/home-cinema-weather-focus.png),
 ## Install
 
 Download the APK from [Releases](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
-(`CleanYourTV-ThreeScreens-4.1.5.apk`, 7.2 MB, versionCode 24 / 4.1.5) and install it:
+(`CleanYourTV-ThreeScreens-4.1.6.apk`, 7.1 MB, versionCode 25 / 4.1.6) and install it:
 
 ```bash
 adb connect 192.168.0.39:5555
-adb install -r CleanYourTV-ThreeScreens-4.1.5.apk
+adb install -r CleanYourTV-ThreeScreens-4.1.6.apk
 ```
 
 It is signed with the same debug key as previous CleanYourTV 3.2/3.4 builds, so it installs as an update:
@@ -94,7 +94,8 @@ the Home role and app data are kept. Android TV 8.0+ (minSdk 26, targetSdk 34).
 A Google TV style screen built with Jetpack Compose; it runs on any Android TV 8.0+ and TV box:
 
 - **Photo wallpaper** — mountains and a lake by default; sunset, night or a 10-minute rotation in settings.
-- **Top bar** — mic (DeepSeek assistant), home-screen button, VPN (green/red), network, notifications with a
+- **Top bar** — mic (DeepSeek assistant), home-screen button, VPN (neutral capsule with the selected VPN's
+  name), network, notifications with a
   counter, search, palette (launcher settings), TV settings, weather and the clock.
 - **“Favorites” and “All apps”** — two rows of banner cards; OK opens an app, long OK opens its menu
   (add to favorites, reorder, app info).
@@ -125,7 +126,8 @@ The VPN pill on the universal screen no longer opens another app — it **raises
 built on AmneziaWG (WireGuard with DPI obfuscation), the engine from
 [SlimVPN](https://github.com/mosloboev444-hue/slimvpn).
 
-- **Press once** to connect, once more to disconnect; the pill is green while the tunnel is up.
+- **Press once** to connect, once more to disconnect; while the tunnel is up the pill adds “· вкл”
+  to its name.
 **The pill shows which VPN is selected**: a neutral capsule with the key icon and the name inside
 (“My VPN” or the app), plus “· вкл” while a tunnel is up.
 

@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
 [![Сайт проекта](https://img.shields.io/badge/сайт-online-6ed6ff?style=flat-square)](https://mosloboev444-hue.github.io/tv-cinema-launcher/)
-[![APK](https://img.shields.io/badge/APK-7.2%20MB-0aa1dd?style=flat-square)](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
+[![APK](https://img.shields.io/badge/APK-7.1%20MB-0aa1dd?style=flat-square)](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
 [![Android TV](https://img.shields.io/badge/Android%20TV-8.0%2B-3ddc84?style=flat-square)](https://developer.android.com/tv)
 [![DeepSeek](https://img.shields.io/badge/DeepSeek-voice-4d6bfe?style=flat-square)](https://platform.deepseek.com/)
 [![Без рекламы](https://img.shields.io/badge/ads-none-critical?style=flat-square)](#)
@@ -42,7 +42,7 @@
 | **DeepSeek-помощник** | микрофон в универсальном экране: распознавание речи, ответы DeepSeek, озвучка TTS; локальные команды работают без сети |
 | **Карусель по кругу** | все установленные приложения в кольце, 7 плиток на экране, конец списка плавно переходит в начало |
 | **Погода** | стеклянная плашка в шапке: иконка, температура, короткое описание; город по публичному IP, кэш на 30 минут |
-| **Кнопка VPN** | круглая кнопка в шапке: зелёная — VPN включён, красная — выключен; открывает настроенное приложение VPN |
+| **Кнопка VPN** | «Кино»/«Классика»: круглая кнопка, зелёная — VPN включён, красная — выключен, открывает настроенное приложение. «Универсальный»: нейтральная капсула с названием выбранного VPN, поднимает встроенный AmneziaWG |
 | **Название приложения** | два нейтральных стиля над выбранной плиткой: «Стекло» (тёмная стеклянная плашка) и «Без фона» (только текст) |
 | **Звуки** | мягкий «тик» при перелистывании карусели и глубокий «тук» подтверждения; синтезируются кодом, без файлов |
 | **Плавность** | карусель без пересчёта разметки: 5.46 % «дёрганых» кадров, медиана 11 мс, p90 28 мс, пропущенных vsync 0 |
@@ -78,13 +78,13 @@
 ## Установка
 
 **Скачать:** [APK из Releases](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest) —
-`CleanYourTV-ThreeScreens-4.1.5.apk` (7.2 МБ, versionCode 24 / 4.1.5).
+`CleanYourTV-ThreeScreens-4.1.6.apk` (7.1 МБ, versionCode 25 / 4.1.6).
 
 Поставить по ADB на телевизор:
 
 ```bash
 adb connect 192.168.0.39:5555        # порт ADB на вашем ТВ
-adb install -r CleanYourTV-ThreeScreens-4.1.5.apk
+adb install -r CleanYourTV-ThreeScreens-4.1.6.apk
 ```
 
 Или скопировать APK на флешку и установить любым файловым менеджером (например, X-plore).
@@ -125,7 +125,8 @@ adb install -r CleanYourTV-ThreeScreens-4.1.5.apk
 Экран в духе Google TV, сделан на Jetpack Compose и работает на любом Android TV 8.0+ и приставке:
 
 - **Фотообои** — горы и озеро (по умолчанию; в настройках можно выбрать закат, ночь или автосмену каждые 10 минут).
-- **Верхний бар** — микрофон (DeepSeek-помощник), кнопка «Домашний экран», VPN (зелёная/красная), сеть,
+- **Верхний бар** — микрофон (DeepSeek-помощник), кнопка «Домашний экран», VPN (нейтральная капсула
+  с названием выбранного VPN), сеть,
   уведомления со счётчиком, поиск, палитра (настройки лаунчера), настройки TV, погода и часы.
 - **«Избранное» и «Все приложения»** — два ряда карточек с баннерами; OK открывает, долгое OK — меню
   приложения (в избранное, порядок, сведения).
@@ -168,7 +169,8 @@ com.gathin.tvhome android.permission.RECORD_AUDIO`).
 туннель внутри лаунчера**. Движок — AmneziaWG (WireGuard с обфускацией против DPI), тот же, что в
 проекте [SlimVPN](https://github.com/mosloboev444-hue/slimvpn).
 
-- **Одно нажатие** — включить; ещё одно — выключить. Плашка зелёная, пока туннель поднят.
+- **Одно нажатие** — включить; ещё одно — выключить. Пока туннель поднят, к названию на кнопке
+  добавляется «· вкл».
 **На кнопке видно, какой VPN выбран**: нейтральная капсула с иконкой ключа и названием («Мой VPN»
 или приложение) внутри; когда туннель поднят, к названию добавляется «· вкл».
 
@@ -241,7 +243,7 @@ adb shell am force-stop com.gathin.tvhome && adb shell input keyevent KEYCODE_HO
 ## Структура репозитория
 
 ```
-apk/            CleanYourTV-ThreeScreens-4.1.5.apk  — готовая сборка
+apk/            CleanYourTV-ThreeScreens-4.1.6.apk  — готовая сборка
 launcher/       исходники (Java + Kotlin/Compose + движок AmneziaWG и libwg-go.so)
 screenshots/    скриншоты с телевизора
 wallpapers/     обои (1080p и 4K)
@@ -258,7 +260,7 @@ reference/      референс и спецификация экрана из �
 cd launcher
 echo "sdk.dir=/путь/к/Android/Sdk" > local.properties
 ./gradlew assembleRelease
-# APK: launcher/app/build/outputs/apk/release/app-release.apk (~7.2 МБ)
+# APK: launcher/app/build/outputs/apk/release/app-release.apk (~7.1 МБ)
 ```
 
 Сборка подписывается debug-ключом из `~/.android/debug.keystore` (как в upstream CleanYourTV), поэтому

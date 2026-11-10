@@ -226,43 +226,6 @@ fun NotificationsDialog(items: List<NotifItem>, onDismiss: () -> Unit) {
     }
 }
 
-/** Выбор VPN-приложения по умолчанию: оно будет открываться по кнопке VPN. */
-@Composable
-fun VpnPickerDialog(
-    apps: List<AppItem>,
-    vpnPackages: Set<String>,
-    current: String?,
-    onPick: (String) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val context = LocalContext.current
-    val focus = rememberInitialFocus()
-    var showAll by remember { mutableStateOf(false) }
-    val candidates = remember(apps, vpnPackages, showAll) {
-        if (showAll) apps else apps.filter { it.packageName in vpnPackages }
-    }
-    DialogPanel(stringResource(R.string.uni_vpn_title), onDismiss) {
-        Text(stringResource(R.string.uni_vpn_desc), color = Color(0xCCFFFFFF), fontSize = 14.sp)
-        LazyColumn(Modifier.heightIn(max = 280.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            if (candidates.isEmpty()) {
-                item { Text(stringResource(R.string.uni_vpn_none_found), color = Color.White, fontSize = 15.sp) }
-            }
-            items(candidates, key = { it.packageName }) { app ->
-                MenuButton(
-                    text = app.label,
-                    value = if (app.packageName == current) stringResource(R.string.uni_vpn_default_mark) else null,
-                    focusRequester = if (app.packageName == candidates.first().packageName) focus else null,
-                ) { onPick(app.packageName) }
-            }
-        }
-        MenuButton(stringResource(if (showAll) R.string.uni_vpn_only else R.string.uni_vpn_show_all)) { showAll = !showAll }
-        MenuButton(stringResource(R.string.uni_vpn_system), focusRequester = if (candidates.isEmpty()) focus else null) {
-            tryStart(context, Intent(ACTION_VPN_SETTINGS))
-            onDismiss()
-        }
-    }
-}
-
 /** Выбор домашнего экрана: «Кино», «Классика» или «Универсальный» (этот). */
 @Composable
 fun ScreenPickerDialog(current: String, onDismiss: () -> Unit) {
@@ -352,7 +315,7 @@ fun VpnMenuDialog(
                     value = if (file == selected) "✓" else null,
                 ) { onSelectProfile(file) }
             }
-            if (profiles.isNotEmpty()) MenuButton("Обновить профили") { onRescan() }
+            MenuButton("Обновить профили") { onRescan() }
         } else {
             MenuButton("Открыть $sourceLabel", focusRequester = focus) { onOpenExternal() }
         }
