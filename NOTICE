@@ -1,0 +1,22 @@
+TV Cinema Launcher — a fork of CleanYourTV
+
+Copyright (c) 2026 mosloboev444-hue (modifications: cinema Home screen, two-screen switch, endless app
+carousel, name badge styles, carousel sounds, weather chip, VPN pill, Russian strings, QA fixes)
+
+Based on CleanYourTV 3.4
+https://github.com/Gathin23/cleanyourtv
+Copyright (c) 2026 Gathin
+Licensed under the MIT License; the original LICENSE text is kept in this repository as LICENSE.
+
+Upstream version used as the base: CleanYourTV 3.4 (versionCode 13, commit 3b6b3a1).
+Files changed by this project are listed in build/launcher-two-screens.patch and build/karaoke-3.4.patch.
+
+The fire "KARAOKE!!!" tile and the VPN gate module come from
+https://github.com/mosloboev444-hue/android-tv-youtube-vpn-karaoke (MIT).
+
+Wallpapers in wallpapers/ are BMW M4 (G82) studio photos sourced from Wallhaven
+(https://wallhaven.cc/w/d6yz6j and related references). They are used as personal TV wallpapers; all rights
+to the photographs belong to their respective owners and they are not covered by this project's MIT license.
+
+The reference video of the original home screen ("BMW M5 G90") is not included in this repository; only a
+written specification and mock frames made for the design live in reference/.

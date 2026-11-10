@@ -1,0 +1,397 @@
+--- /dev/null
++++ b/launcher/app/src/main/java/com/gathin/tvhome/FireBannerDrawable.java
+@@ -0,0 +1,224 @@
++package com.gathin.tvhome;
++
++import android.animation.ValueAnimator;
++import android.graphics.Canvas;
++import android.graphics.Color;
++import android.graphics.ColorFilter;
++import android.graphics.LinearGradient;
++import android.graphics.Paint;
++import android.graphics.Path;
++import android.graphics.PixelFormat;
++import android.graphics.RadialGradient;
++import android.graphics.Rect;
++import android.graphics.Shader;
++import android.graphics.Typeface;
++import android.graphics.drawable.Animatable;
++import android.graphics.drawable.Drawable;
++import android.os.SystemClock;
++import android.view.animation.LinearInterpolator;
++
++import androidx.annotation.NonNull;
++import androidx.annotation.Nullable;
++
++import java.util.Random;
++
++/**
++ * The karaoke tile's banner: animated fire with «КАРАОКЕ!!!» burning on top of it.
++ *
++ * <p>Tiles normally show a static banner. This one is a {@link Drawable} that animates itself while it is
++ * visible (config.xml fire_app), so the fire burns only while Home is on screen: {@link #setVisible} from
++ * the ImageView starts and stops it, and nothing runs in the background.
++ */
++public final class FireBannerDrawable extends Drawable implements Animatable {
++
++    private static final int EMBERS = 22;
++    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
++    private final Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
++    private final Path path = new Path();
++    private final float[] emberX = new float[EMBERS];
++    private final float[] emberPhase = new float[EMBERS];
++    private final float[] emberSpeed = new float[EMBERS];
++    private final float[] emberSize = new float[EMBERS];
++    private final float[][] tongueX = new float[3][];
++    private final float[][] tongueW = new float[3][];
++    private final float[][] tongueH = new float[3][];
++    private final float[][] tongueP = new float[3][];
++
++    private boolean running;
++    private long start;
++    private long lastFrame;
++    private ValueAnimator animator;
++
++    private final ValueAnimator.AnimatorUpdateListener update = animation -> {
++        long now = SystemClock.uptimeMillis();
++        if (now - lastFrame < 33) return;
++        lastFrame = now;
++        invalidateSelf();
++    };
++
++    public FireBannerDrawable() {
++        textPaint.setTypeface(Typeface.create("sans-serif-black", Typeface.BOLD));
++        textPaint.setTextAlign(Paint.Align.CENTER);
++        textPaint.setColor(0xFFFFFFFF);
++        textPaint.setShadowLayer(10f, 0f, 0f, 0xFFFF5A00);
++
++        Random random = new Random(20261104L);
++        for (int i = 0; i < EMBERS; i++) {
++            emberX[i] = random.nextFloat();
++            emberPhase[i] = random.nextFloat();
++            emberSpeed[i] = 0.5f + random.nextFloat();
++            emberSize[i] = 1.2f + random.nextFloat() * 2.2f;
++        }
++        int[] counts = {16, 22, 28};
++        for (int layer = 0; layer < 3; layer++) {
++            int n = counts[layer];
++            tongueX[layer] = new float[n];
++            tongueW[layer] = new float[n];
++            tongueH[layer] = new float[n];
++            tongueP[layer] = new float[n];
++            for (int i = 0; i < n; i++) {
++                tongueX[layer][i] = (i + 0.2f + random.nextFloat() * 0.6f) / n;
++                tongueW[layer][i] = 0.7f + random.nextFloat() * 0.8f;
++                tongueH[layer][i] = 0.5f + random.nextFloat() * 0.8f;
++                tongueP[layer][i] = random.nextFloat() * 6.283f;
++            }
++        }
++    }
++
++    @Override
++    public void draw(@NonNull Canvas canvas) {
++        Rect b = getBounds();
++        if (b.isEmpty()) return;
++        int w = b.width();
++        int h = b.height();
++        float t = running ? (SystemClock.uptimeMillis() - start) / 1000f : 0.3f;
++
++        paint.setAlpha(255);
++        paint.setShader(new LinearGradient(0, 0, 0, h,
++                new int[]{0xFF1B0600, 0xFF070100, 0xFF000000}, null, Shader.TileMode.CLAMP));
++        canvas.drawRect(b, paint);
++
++        paint.setShader(new RadialGradient(w * 0.5f, h * 1.05f, Math.max(w * 0.55f, h * 0.9f),
++                0x88FF3D00, 0x00000000, Shader.TileMode.CLAMP));
++        canvas.drawRect(b, paint);
++        paint.setShader(null);
++
++        sheet(canvas, w, h, t, 0, 0.96f, 0.58f, 0xD0, 0xFF9E1B00);
++        sheet(canvas, w, h, t, 1, 0.99f, 0.44f, 0xF0, 0xFFFF4D00);
++        sheet(canvas, w, h, t, 2, 1.02f, 0.30f, 0xFF, 0xFFFFB300);
++
++        drawEmbers(canvas, w, h, t);
++
++        int size = (int) (h * 0.34f);
++        textPaint.setTextSize(size);
++        float max = w * 0.86f;
++        while (textPaint.measureText("КАРАОКЕ!!!") > max && size > 8) {
++            size -= 2;
++            textPaint.setTextSize(size);
++        }
++        canvas.drawText("КАРАОКЕ!!!", w / 2f, h * 0.46f, textPaint);
++    }
++
++    private void sheet(Canvas c, int w, int h, float t, int layer, float base, float height,
++                       int alpha, int colour) {
++        float baseY = h * base;
++        float maxH = h * height;
++        float halfBase = (layer == 0 ? 0.070f : layer == 1 ? 0.048f : 0.032f) * w;
++        float step = Math.max(2f, w / 120f);
++
++        paint.setAlpha(255);
++        path.reset();
++        path.moveTo(0, h);
++        for (float x = 0; x <= w; x += step) {
++            float y = baseY;
++            for (int i = 0; i < tongueX[layer].length; i++) {
++                float centre = (tongueX[layer][i] + (float) Math.sin(t * 0.12f + tongueP[layer][i]) * 0.03f) * w;
++                float half = halfBase * tongueW[layer][i];
++                float d = Math.abs(x - centre);
++                if (d >= half) continue;
++                float tip = (float) Math.pow(1f - d / half, 0.55f);
++                float breath = 0.55f + 0.45f * (float) Math.sin(t * (0.9f + tongueP[layer][i] * 0.4f) + tongueP[layer][i] * 5f);
++                float tongue = maxH * tongueH[layer][i] * breath * tip;
++                if (baseY - tongue < y) y = baseY - tongue;
++            }
++            path.lineTo(x, y);
++        }
++        path.lineTo(w, h);
++        path.close();
++
++        paint.setShader(new LinearGradient(0, baseY - maxH, 0, h,
++                0x00FFFFFF & colour, (alpha << 24) | (colour & 0x00FFFFFF), Shader.TileMode.CLAMP));
++        c.drawPath(path, paint);
++        paint.setShader(null);
++    }
++
++    private void drawEmbers(Canvas c, int w, int h, float t) {
++        for (int i = 0; i < EMBERS; i++) {
++            float cycle = (t * emberSpeed[i] + emberPhase[i]) % 1f;
++            float y = h * (0.96f - 0.75f * cycle);
++            float x = w * emberX[i] + (float) Math.sin(t * 1.3f + i) * w * 0.02f;
++            int alpha = (int) (210 * (1f - cycle) * Math.min(1f, cycle * 5f));
++            paint.setColor(Color.argb(Math.max(0, alpha), 255, 190, 90));
++            c.drawCircle(x, y, emberSize[i] * (1f - 0.35f * cycle), paint);
++        }
++    }
++
++    // ---- Animation -----------------------------------------------------------------------------
++
++    @Override
++    public void start() {
++        if (!running) {
++            running = true;
++            start = SystemClock.uptimeMillis();
++        }
++        if (animator == null) {
++            animator = ValueAnimator.ofFloat(0f, 1f);
++            animator.setDuration(1000);
++            animator.setRepeatCount(ValueAnimator.INFINITE);
++            animator.setInterpolator(new LinearInterpolator());
++            animator.addUpdateListener(update);
++        }
++        if (!animator.isStarted()) {
++            lastFrame = 0;
++            animator.start();
++        }
++        invalidateSelf();
++    }
++
++    @Override
++    public void stop() {
++        if (!running) return;
++        running = false;
++        if (animator != null) animator.cancel();
++    }
++
++    @Override
++    public boolean isRunning() {
++        return running;
++    }
++
++    @Override
++    public boolean setVisible(boolean visible, boolean restart) {
++        boolean changed = super.setVisible(visible, restart);
++        if (visible) start();
++        else stop();
++        return changed;
++    }
++
++    // ---- Drawable plumbing ---------------------------------------------------------------------
++
++    @Override
++    public void setAlpha(int alpha) {
++        // The banner is artwork; the tile's own alpha animations handle it.
++    }
++
++    @Override
++    public void setColorFilter(@Nullable ColorFilter colorFilter) {
++        // Not used.
++    }
++
++    @Override
++    public int getOpacity() {
++        return PixelFormat.TRANSLUCENT;
++    }
++}
+
+--- a/launcher/app/src/main/java/com/gathin/tvhome/AppAdapter.java
++++ b/launcher/app/src/main/java/com/gathin/tvhome/AppAdapter.java
+@@ -14,6 +14,7 @@
+ import android.graphics.Outline;
+ import android.graphics.PixelFormat;
+ import android.graphics.Rect;
++import android.graphics.drawable.Animatable;
+ import android.graphics.drawable.Drawable;
+ import android.graphics.drawable.GradientDrawable;
+ import android.net.Uri;
+@@ -220,6 +221,8 @@
+     private final boolean uniformTiles;
+     /** Packages drawn from their icon and name even when they have a banner (config.xml icon_tiles). */
+     private final Set<String> iconTiles;
++    /** config.xml fire_app: that app's tile gets an animated fire banner (the karaoke button). */
++    private final String fireApp;
+     private final List<Entry> items = new ArrayList<>();
+ 
+     AppAdapter(Context ctx, TileListener listener, int dockSize, Config cfg) {
+@@ -244,6 +247,7 @@
+         this.cinematic = cfg.cinematicHome;
+         this.launchActions = cfg.launchActions;
+         this.iconTiles = new HashSet<>(Arrays.asList(ctx.getResources().getStringArray(R.array.icon_tiles)));
++        this.fireApp = ctx.getString(R.string.fire_app);
+         this.tileMenu = cfg.tileMenu;
+         this.appLabels = cfg.appLabels;
+         this.appBanners = cfg.appBanners;
+@@ -297,8 +301,11 @@
+                     appLabels.containsKey(pkg) ? appLabels.get(pkg) : String.valueOf(ri.loadLabel(pm)), pkg);
+             if (!seen.add(pkg + '\n' + label)) continue;
+             Drawable banner = null;
+-            // uniform_tiles draws the icon, so an app's banner is never loaded. A module card keeps its banner.
+-            if (!(uniformTiles && card == null)) {
++            // fire_app: the karaoke button burns instead of showing a static banner.
++            if (card == null && pkg.equals(fireApp)) {
++                banner = new FireBannerDrawable();
++            } else if (!(uniformTiles && card == null)) {
++                // uniform_tiles draws the icon, so an app's banner is never loaded. A module card keeps its banner.
+                 banner = bundledBanner(appBanners.get(pkg));
+                 if (banner == null) banner = iconTiles.contains(pkg) ? iconBanner(ri.loadIcon(pm)) : loadBanner(pm, ri);
+             }
+@@ -501,6 +508,7 @@
+             h.banner.setVisibility(View.VISIBLE);
+             h.icon.setVisibility(View.GONE);
+             h.label.setVisibility(View.GONE);
++            if (e.banner instanceof Animatable) ((Animatable) e.banner).start();
+         } else {
+             h.banner.setImageDrawable(null);
+             h.banner.setVisibility(View.GONE);
+@@ -563,6 +571,24 @@
+         }
+     }
+ 
++    /** Starts or stops the fire tile's animation while Home is in front (MainActivity onResume/onPause). */
++    void setFireRunning(boolean running) {
++        for (Entry e : items) {
++            if (!(e.banner instanceof FireBannerDrawable)) continue;
++            if (running) ((FireBannerDrawable) e.banner).start();
++            else ((FireBannerDrawable) e.banner).stop();
++        }
++    }
++
++    @Override
++    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
++        super.onViewRecycled(holder);
++        if (holder instanceof Holder) {
++            Drawable showing = ((Holder) holder).banner.getDrawable();
++            if (showing instanceof Animatable) ((Animatable) showing).stop();
++        }
++    }
++
+     @Override
+     public int getItemCount() {
+         return items.size() + (showLibrary ? 1 : 0);
+
+--- a/launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java
++++ b/launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java
+@@ -1139,6 +1139,7 @@
+         if (gameDay != null) gameDay.start();
+         sky.update();
+         wallpaperPlayer.start();
++        adapter.setFireRunning(true);
+         handler.postDelayed(minuteTick, MINUTE_MS);
+         if (festive && lamp != null) {
+             lamp.start();
+@@ -1313,6 +1314,7 @@
+         root.removeCallbacks(showIdleClock);
+         endReorder();   // Home or another app while reordering keeps the order so far
+         wallpaperPlayer.stop();
++        adapter.setFireRunning(false);
+         stopAmbientAnimation();
+         hero.animate().cancel();
+         ambient.animate().cancel();
+
+--- a/launcher/app/src/main/res/values/config.xml
++++ b/launcher/app/src/main/res/values/config.xml
+@@ -17,10 +17,10 @@
+ 
+     <!-- Apps pinned to the dock row at the bottom, in this order. Missing apps are skipped. -->
+     <string-array name="dock_apps">
+-        <item>com.netflix.ninja</item>
+-        <item>com.amazon.amazonvideo.livingroom</item>
+         <item>com.google.android.youtube.tv</item>
+-        <item>in.startv.hotstar</item>
++        <item>com.gathin.vpngate</item>
++        <item>ar.tvplayer.tv</item>
++        <item>ru.iptvremote.android.iptv</item>
+     </string-array>
+     <!-- With fewer dock_apps than columns (or a dock app that is not installed), the free dock slots take
+          the first grid apps, so the dock never shows a gap. false leaves them empty (#162); a theme can
+@@ -47,7 +47,7 @@
+          after the TV starts it opens that app instead. Once per boot, like boot_to_live_tv (which wins when
+          both are set); Home after that stays Home, and an app that is gone or disabled leaves Home on screen.
+          Off by default; a theme can set "open_on_start_choice": true. -->
+-    <bool name="open_on_start_choice">false</bool>
++    <bool name="open_on_start_choice">true</bool>
+     <!-- With open_on_start_choice: the picked app also opens each time the screen comes back on, for sets whose
+          remote powers them into a light sleep with no boot. It opens over whatever was in front, an HDMI input
+          included. Off by default; a theme can set "open_on_start_on_wake": true. -->
+@@ -128,7 +128,7 @@
+          "key_filter"). Some firmware (TCL Google TV on Android 12) drops key auto-repeat once ANY service
+          filters keys, so long-pressing volume only steps once: set false and the service keeps running but
+          stops filtering, which brings repeat back at the price of the remote buttons below doing nothing. -->
+-    <bool name="key_filter">true</bool>
++    <bool name="key_filter">false</bool>
+ 
+     <!-- With key_filter on, true makes HomeKeyService and InputKeyService stop filtering keys while a game
+          controller is connected, so games see its buttons (Steam Link with an Xbox controller on a TCL G07
+@@ -247,7 +247,7 @@
+          on, HomeKeyService (HOME_KEY_SERVICE=1) sends a Live TV window back to Home; the first key hands control
+          to the user, so opening Live TV on purpose is never undone. The opposite of boot_to_live_tv, and ignored
+          when that is on. A theme's config.json can set it too. Off by default. -->
+-    <bool name="power_on_home">false</bool>
++    <bool name="power_on_home">true</bool>
+     <!-- Home at every power-on, whatever the firmware put in front (the last HDMI input, Live TV or an app),
+          for TVs that come back to the last source, like Philips. Needs HOME_KEY_SERVICE=1; a key pressed first
+          wins. Ignored with boot_to_live_tv or an Open on start app. Can also be set with "power_on_home_always". -->
+@@ -269,7 +269,7 @@
+     <bool name="lunar_date">false</bool>
+     <!-- The date (with the Shamsi and lunar lines) on its own line under the clock instead of beside it, for a top bar
+          whose pills leave the date too little room. Can also be set with "date_below_clock" in a theme. -->
+-    <bool name="date_below_clock">false</bool>
++    <bool name="date_below_clock">true</bool>
+     <!-- The language the launcher shows itself in, as a language tag ("vi", "pt-BR", "ar-EG-u-nu-latn"
+          for Arabic with Western digits), instead of the TV's. For firmware
+          that has no menu entry for the owner's language although the launcher is translated into it (a China-market
+@@ -286,7 +286,11 @@
+     <!-- Optional VPN app the network pill opens (hold the pill for Wi-Fi settings), e.g. the package of the
+          VPN you use. Empty: the pill opens Wi-Fi settings. The green VPN badge shows for any VPN either way;
+          with an app set here, a red "VPN off" badge also shows while no VPN is up. -->
+-    <string name="vpn_app" translatable="false"></string>
++    <string name="vpn_app" translatable="false">st.uboo.android.client</string>
++    <!-- The app whose tile is drawn as animated fire (the karaoke button). Empty: no fire tile. The tile
++         uses the app's own leanback activity; the fire is drawn by FireBannerDrawable, so it costs nothing
++         while Home is not on screen. -->
++    <string name="fire_app" translatable="false">com.gathin.vpngate</string>
+     <!-- The VPN as its own pill after the network pill, instead of a badge inside it: solid green with a lock while a
+          VPN is up, solid red "VPN off" while none is and vpn_app is installed. Pressing it opens vpn_app (without it,
+          the App library, or VPN settings when app_library is off), and the network pill then always opens Wi-Fi
+@@ -294,7 +298,7 @@
+          label with icon_only_buttons, since the red state has no icon. A VPN app's kill switch keeps a VPN up while
+          the app says disconnected (it holds the tunnel to block traffic), so the pill stays green then. Can also be
+          set with "vpn_pill" in a theme. -->
+-    <bool name="vpn_pill">false</bool>
++    <bool name="vpn_pill">true</bool>
+     <!-- The dock as its own row: a lighter band, no names under the tiles, parked low on the screen with the top
+          shelf above it. false makes the dock apps simply the first tiles of one plain grid (still in dock_apps
+          order, no empty slots), with names under every tile and the glow behind every focused tile. -->
+
