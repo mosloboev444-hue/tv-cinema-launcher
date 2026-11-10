@@ -139,47 +139,49 @@ fun vpnSettingsIntent() = Intent(ACTION_VPN_SETTINGS)
 @OptIn(androidx.tv.material3.ExperimentalTvMaterial3Api::class)
 @Composable
 private fun VpnPill(vpnOn: Boolean, label: String, onTap: () -> Unit, onLongPress: () -> Unit) {
-    // Same neutral pill as the other buttons: a key icon, white focus ring, no colour coding. The chosen
-    // VPN's name sits underneath in small print (with “вкл” while a tunnel is up).
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Surface(
-            onClick = { SoundFx.play(Sound.SELECT); onTap() },   // pointer/touch only; D-pad OK is handled below
-            shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(50)),
-            colors = ClickableSurfaceDefaults.colors(
-                containerColor = Color(0x66000000),
-                focusedContainerColor = Color(0x66000000),
-                contentColor = Color.White,
-                focusedContentColor = Color.White,
+    // One neutral capsule, same height and palette as the other top-bar buttons: the key icon and the name
+    // live inside it, so nothing sticks out under the button. No colour coding — the “· вкл” suffix tells
+    // whether the chosen VPN (built-in tunnel or app) is currently up.
+    Surface(
+        onClick = { SoundFx.play(Sound.SELECT); onTap() },   // pointer/touch only; D-pad OK is handled below
+        shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(50)),
+        colors = ClickableSurfaceDefaults.colors(
+            containerColor = Color(0x66000000),
+            focusedContainerColor = Color(0x66000000),
+            contentColor = Color.White,
+            focusedContentColor = Color.White,
+        ),
+        border = ClickableSurfaceDefaults.border(
+            border = Border.None,
+            focusedBorder = Border(
+                border = androidx.compose.foundation.BorderStroke(3.dp, Color.White),
+                inset = 0.dp,
+                shape = RoundedCornerShape(50),
             ),
-            border = ClickableSurfaceDefaults.border(
-                border = Border.None,
-                focusedBorder = Border(
-                    border = androidx.compose.foundation.BorderStroke(3.dp, Color.White),
-                    inset = 0.dp,
-                    shape = RoundedCornerShape(50),
-                ),
-            ),
-            scale = ClickableSurfaceDefaults.scale(focusedScale = 1.16f),
-            modifier = Modifier
-                .size(44.dp)
-                .rememberTvOkGestures(
-                    onTap = { SoundFx.play(Sound.SELECT); onTap() },
-                    onLongPress = onLongPress,
-                )
-                .onFocusChanged { if (it.hasFocus) SoundFx.play(Sound.FOCUS) },
+        ),
+        scale = ClickableSurfaceDefaults.scale(focusedScale = 1.16f),
+        modifier = Modifier
+            .height(44.dp)
+            .rememberTvOkGestures(
+                onTap = { SoundFx.play(Sound.SELECT); onTap() },
+                onLongPress = onLongPress,
+            )
+            .onFocusChanged { if (it.hasFocus) SoundFx.play(Sound.FOCUS) },
+    ) {
+        Row(
+            Modifier.padding(horizontal = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(7.dp),
         ) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(24.dp))
-            }
+            Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(20.dp))
+            Text(
+                if (vpnOn) "$label · вкл" else label,
+                color = Color.White,
+                fontSize = 13.sp,
+                maxLines = 1,
+                softWrap = false,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            )
         }
-        Text(
-            if (vpnOn) "$label · вкл" else label,
-            color = Color(0xCCFFFFFF),
-            fontSize = 11.sp,
-            maxLines = 1,
-            softWrap = false,
-            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-            modifier = Modifier.widthIn(max = 96.dp),
-        )
     }
 }

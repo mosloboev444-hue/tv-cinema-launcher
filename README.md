@@ -78,13 +78,13 @@
 ## Установка
 
 **Скачать:** [APK из Releases](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest) —
-`CleanYourTV-ThreeScreens-4.1.3.apk` (7.2 МБ, versionCode 22 / 4.1.3).
+`CleanYourTV-ThreeScreens-4.1.4.apk` (7.2 МБ, versionCode 23 / 4.1.4).
 
 Поставить по ADB на телевизор:
 
 ```bash
 adb connect 192.168.0.39:5555        # порт ADB на вашем ТВ
-adb install -r CleanYourTV-ThreeScreens-4.1.3.apk
+adb install -r CleanYourTV-ThreeScreens-4.1.4.apk
 ```
 
 Или скопировать APK на флешку и установить любым файловым менеджером (например, X-plore).
@@ -169,8 +169,8 @@ com.gathin.tvhome android.permission.RECORD_AUDIO`).
 проекте [SlimVPN](https://github.com/mosloboev444-hue/slimvpn).
 
 - **Одно нажатие** — включить; ещё одно — выключить. Плашка зелёная, пока туннель поднят.
-**На кнопке видно, какой VPN выбран**: кнопка — обычная нейтральная иконка ключа, а под ней подпись
-с названием («Мой VPN» или приложение) и приписка «· вкл», пока туннель поднят.
+**На кнопке видно, какой VPN выбран**: нейтральная капсула с иконкой ключа и названием («Мой VPN»
+или приложение) внутри; когда туннель поднят, к названию добавляется «· вкл».
 
 **Как работает кнопка.** Она включает то, что выбрано в строке «Источник VPN»:
 «Мой VPN (AmneziaWG)» — поднимает встроенный туннель; любое другое приложение — открывает его.
@@ -241,7 +241,7 @@ adb shell am force-stop com.gathin.tvhome && adb shell input keyevent KEYCODE_HO
 ## Структура репозитория
 
 ```
-apk/            CleanYourTV-ThreeScreens-4.1.3.apk  — готовая сборка
+apk/            CleanYourTV-ThreeScreens-4.1.4.apk  — готовая сборка
 launcher/       исходники (Java + Kotlin/Compose + движок AmneziaWG и libwg-go.so)
 screenshots/    скриншоты с телевизора
 wallpapers/     обои (1080p и 4K)
