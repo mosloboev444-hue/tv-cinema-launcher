@@ -305,3 +305,45 @@ fun Screensaver(wallpaperIndex: Int, weather: Weather?) {
         }
     }
 }
+
+/** «Мой VPN»: собственный туннель AmneziaWG по профилям из папки vpn. */
+@Composable
+fun VpnMenuDialog(
+    connected: Boolean,
+    working: Boolean,
+    profileName: String?,
+    profiles: List<java.io.File>,
+    selected: java.io.File?,
+    onToggle: () -> Unit,
+    onSelect: (java.io.File) -> Unit,
+    onRescan: () -> Unit,
+    onOtherApps: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val focus = rememberInitialFocus()
+    DialogPanel("Мой VPN (AmneziaWG)", onDismiss) {
+        Text(
+            when {
+                working -> "Подключаюсь…"
+                profileName == null -> "Профили не найдены. Положите .conf в папку vpn приложения."
+                else -> "Профиль: $profileName"
+            },
+            color = Color(0xCCFFFFFF),
+            fontSize = 14.sp,
+        )
+        MenuButton(
+            text = if (connected) "Отключить VPN" else "Подключить VPN",
+            value = if (connected) "включён" else null,
+            focusRequester = focus,
+        ) { onToggle() }
+        profiles.take(8).forEach { file ->
+            MenuButton(
+                text = file.name,
+                value = if (file == selected) "✓" else null,
+            ) { onSelect(file) }
+        }
+        MenuButton("Обновить профили") { onRescan() }
+        MenuButton("Другие VPN-приложения") { onOtherApps() }
+        MenuButton(stringResource(R.string.uni_close)) { onDismiss() }
+    }
+}

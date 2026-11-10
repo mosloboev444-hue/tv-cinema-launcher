@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
 [![Сайт проекта](https://img.shields.io/badge/сайт-online-6ed6ff?style=flat-square)](https://mosloboev444-hue.github.io/tv-cinema-launcher/)
-[![APK](https://img.shields.io/badge/APK-2.1%20MB-0aa1dd?style=flat-square)](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
+[![APK](https://img.shields.io/badge/APK-7.2%20MB-0aa1dd?style=flat-square)](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
 [![Android TV](https://img.shields.io/badge/Android%20TV-8.0%2B-3ddc84?style=flat-square)](https://developer.android.com/tv)
 [![DeepSeek](https://img.shields.io/badge/DeepSeek-voice-4d6bfe?style=flat-square)](https://platform.deepseek.com/)
 [![Без рекламы](https://img.shields.io/badge/ads-none-critical?style=flat-square)](#)
@@ -47,6 +47,7 @@
 | **Звуки** | мягкий «тик» при перелистывании карусели и глубокий «тук» подтверждения; синтезируются кодом, без файлов |
 | **Плавность** | карусель без пересчёта разметки: 5.46 % «дёрганых» кадров, медиана 11 мс, p90 28 мс, пропущенных vsync 0 |
 | **Универсальность** | Android TV 8.0+, приставки без пометки Leanback, масштаб под HD/FHD/4K, пульт и мышь |
+| **Свой VPN** | кнопка VPN на универсальном экране поднимает собственный туннель AmneziaWG (WARP) прямо в лаунчере; повторное нажатие выключает |
 | **Обои** | фотообои с идеальной резкостью (4K-исходник); можно поставить свои |
 | **Без рекламы и аккаунтов** | только погода раз в 30 минут (одна пара запросов), без телеметрии |
 
@@ -77,13 +78,13 @@
 ## Установка
 
 **Скачать:** [APK из Releases](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest) —
-`CleanYourTV-ThreeScreens-4.0.4.apk` (2.1 МБ, versionCode 18 / 4.0.4).
+`CleanYourTV-ThreeScreens-4.1.0.apk` (7.2 МБ, versionCode 19 / 4.1.0).
 
 Поставить по ADB на телевизор:
 
 ```bash
 adb connect 192.168.0.39:5555        # порт ADB на вашем ТВ
-adb install -r CleanYourTV-ThreeScreens-4.0.4.apk
+adb install -r CleanYourTV-ThreeScreens-4.1.0.apk
 ```
 
 Или скопировать APK на флешку и установить любым файловым менеджером (например, X-plore).
@@ -161,6 +162,28 @@ adb shell am force-stop com.gathin.tvhome && adb shell input keyevent KEYCODE_HO
 Разрешение на микрофон выдаётся при первом запуске помощника (или `adb shell pm grant
 com.gathin.tvhome android.permission.RECORD_AUDIO`).
 
+## Свой VPN (AmneziaWG)
+
+Кнопка VPN на универсальном экране больше не открывает чужое приложение — она **поднимает собственный
+туннель внутри лаунчера**. Движок — AmneziaWG (WireGuard с обфускацией против DPI), тот же, что в
+проекте [SlimVPN](https://github.com/mosloboev444-hue/slimvpn).
+
+- **Одно нажатие** — включить; ещё одно — выключить. Плашка зелёная, пока туннель поднят.
+- **Долгое ОК** — меню «Мой VPN»: профили `.conf`, выбор активного, «Обновить профили»,
+  «Другие VPN-приложения» и системные настройки.
+- Работает в том числе в сетях, где обычный WireGuard режется DPI (эти WARP-конфиги для того и сделаны).
+
+**Где профили.** Файлы `*.conf` в формате AmneziaWG/WARP лежат только на телевизоре, в папке приложения:
+
+```bash
+adb push STR.WARP59009.conf /sdcard/Android/data/com.gathin.tvhome/files/vpn/
+# затем: долгое ОК на VPN → «Обновить профили»
+```
+
+В APK и в репозитории профилей нет — ключи в них личные, поэтому в поставку они не попадают.
+Движок собран под `armeabi-v7a` (как у этого Philips); на 64-битном телевизоре кнопка честно сообщит,
+что движок недоступен, и предложит внешнее VPN-приложение.
+
 ## Погода
 
 - Город определяется по публичному IP (`ipwho.is`), погода — `wttr.in` (короткие русские описания),
@@ -211,8 +234,8 @@ adb shell am force-stop com.gathin.tvhome && adb shell input keyevent KEYCODE_HO
 ## Структура репозитория
 
 ```
-apk/            CleanYourTV-ThreeScreens-4.0.4.apk  — готовая сборка
-launcher/       исходники (Java + Kotlin/Compose: CleanYourTV 3.4 + универсальный экран)
+apk/            CleanYourTV-ThreeScreens-4.1.0.apk  — готовая сборка
+launcher/       исходники (Java + Kotlin/Compose + движок AmneziaWG и libwg-go.so)
 screenshots/    скриншоты с телевизора
 wallpapers/     обои (1080p и 4K)
 patch/          патч караоке-плитки (остальная функциональность — в launcher/)
@@ -228,7 +251,7 @@ reference/      референс и спецификация экрана из �
 cd launcher
 echo "sdk.dir=/путь/к/Android/Sdk" > local.properties
 ./gradlew assembleRelease
-# APK: launcher/app/build/outputs/apk/release/app-release.apk (~2.1 МБ)
+# APK: launcher/app/build/outputs/apk/release/app-release.apk (~7.2 МБ)
 ```
 
 Сборка подписывается debug-ключом из `~/.android/debug.keystore` (как в upstream CleanYourTV), поэтому
@@ -254,6 +277,9 @@ APK ставится обновлением поверх прежних сбор
 - Голосовой помощник работает через [DeepSeek API](https://platform.deepseek.com/); идея выросла из проекта
   [deepseek-alisa](https://github.com/mosloboev444-hue/deepseek-alisa).
 - Универсальный экран — Jetpack Compose for TV (androidx.tv).
+- Свой VPN — движок [AmneziaWG](https://github.com/amnezia-vpn/amneziawg-android) (Apache-2.0),
+  Android-обвязка из [SlimVPN](https://github.com/mosloboev444-hue/slimvpn); лицензия в
+  [LICENSE-AMNEZIAWG.txt](LICENSE-AMNEZIAWG.txt).
 - Референс: видео с домашним экраном BMW M5 G90 (в репозитории только спецификация и кадры-макеты,
   самого видео нет).
 

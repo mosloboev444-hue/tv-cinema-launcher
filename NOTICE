@@ -20,3 +20,8 @@ to the photographs belong to their respective owners and they are not covered by
 
 The reference video of the original home screen ("BMW M5 G90") is not included in this repository; only a
 written specification and mock frames made for the design live in reference/.
+
+The built-in VPN uses the AmneziaWG Android backend (https://github.com/amnezia-vpn/amneziawg-android),
+Copyright the AmneziaWG and WireGuard LLC authors, licensed under Apache-2.0; the Android service and
+config wrappers come from https://github.com/mosloboev444-hue/slimvpn (MIT). See LICENSE-AMNEZIAWG.txt.
+VPN profiles (*.conf) are user data: they are not part of this repository or the APK.

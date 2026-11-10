@@ -61,6 +61,7 @@ fun TopBar(
     onLauncherSettings: () -> Unit,
     onAssistant: () -> Unit,
     onScreens: () -> Unit,
+    vpnOn: Boolean,
     onVpn: () -> Unit,
     onVpnLong: () -> Unit,
     modifier: Modifier = Modifier,
@@ -82,7 +83,7 @@ fun TopBar(
             PillButton(Icons.Default.Home) { onScreens() }
             // A held OK opens the VPN picker; it must open on release, or the held key's repeats end up in
             // the dialog and click its first row (see rememberTvOkGestures).
-            VpnPill(net, onVpn, onVpnLong)
+            VpnPill(net, vpnOn, onVpn, onVpnLong)
             PillButton(
                 icon = when (net.kind) {
                     NetKind.NONE -> Icons.Default.WifiOff
@@ -133,13 +134,13 @@ fun vpnSettingsIntent() = Intent(ACTION_VPN_SETTINGS)
 
 @OptIn(androidx.tv.material3.ExperimentalTvMaterial3Api::class)
 @Composable
-private fun VpnPill(net: NetStatus, onTap: () -> Unit, onLongPress: () -> Unit) {
+private fun VpnPill(net: NetStatus, vpnOn: Boolean, onTap: () -> Unit, onLongPress: () -> Unit) {
     Surface(
         onClick = { SoundFx.play(Sound.SELECT); onTap() },   // pointer/touch only; D-pad OK is handled below
         shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(50)),
         colors = ClickableSurfaceDefaults.colors(
-            containerColor = if (net.vpn) Color(0xFF2E7D32) else Color(0xFFC62828),
-            focusedContainerColor = if (net.vpn) Color(0xFF2E7D32) else Color(0xFFC62828),
+            containerColor = if (net.vpn || vpnOn) Color(0xFF2E7D32) else Color(0xFFC62828),
+            focusedContainerColor = if (net.vpn || vpnOn) Color(0xFF2E7D32) else Color(0xFFC62828),
             contentColor = Color.White,
             focusedContentColor = Color.White,
         ),

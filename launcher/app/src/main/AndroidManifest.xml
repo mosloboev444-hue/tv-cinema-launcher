@@ -116,6 +116,16 @@
             </intent-filter>
         </activity>
 
+        <!-- The launcher's own VPN: AmneziaWG backend (libwg-go.so) exposed as a VpnService. -->
+        <service
+            android:name="org.amnezia.awg.backend.GoBackend$VpnService"
+            android:exported="false"
+            android:permission="android.permission.BIND_VPN_SERVICE">
+            <intent-filter>
+                <action android:name="android.net.VpnService" />
+            </intent-filter>
+        </service>
+
         <!-- Third Home screen: the universal Compose launcher, opened from the menu ("Экран: Универсальный").
              It is not a HOME activity itself: MainActivity routes to it, so the Home role stays on one activity. -->
         <activity

@@ -1,14 +1,21 @@
 package com.gathin.tvhome.universal.ui
 
+import android.app.Activity
+import android.net.VpnService
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -47,6 +54,9 @@ import com.gathin.tvhome.universal.data.saveDefaultVpn
 import com.gathin.tvhome.universal.data.saveFavorites
 import com.gathin.tvhome.universal.data.saveSettings
 import com.gathin.tvhome.universal.data.toast
+import com.gathin.tvhome.vpn.VpnController
+import com.gathin.tvhome.vpn.VpnProfiles
+import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -78,11 +88,15 @@ private fun LauncherContent() {
     var showSettings by remember { mutableStateOf(false) }
     var showNotifs by remember { mutableStateOf(false) }
     var showVpnPicker by remember { mutableStateOf(false) }
+    var showVpnMenu by remember { mutableStateOf(false) }
     var showScreens by remember { mutableStateOf(false) }
     var showAssistant by remember { mutableStateOf(false) }
-    // Long-press on the VPN pill opens the picker; the key-up that follows must not also launch the app.
-    var vpnPickerOpenedAt by remember { mutableStateOf(0L) }
     var showKey by remember { mutableStateOf(false) }
+    // The launcher's own AmneziaWG tunnel.
+    var vpnConnected by remember { mutableStateOf(VpnController.isConnected()) }
+    var vpnWorking by remember { mutableStateOf(false) }
+    var vpnProfiles by remember { mutableStateOf(VpnProfiles.list(context)) }
+    var vpnSelected by remember { mutableStateOf(VpnProfiles.selected(context)) }
     var launchAfterPick by remember { mutableStateOf(false) }
     // CleanYourTV's configured VPN app is the universal screen's default one, until changed here.
     var defaultVpn by remember { mutableStateOf(loadDefaultVpn(context) ?: ScreenBridge.defaultVpn(context)) }
@@ -91,7 +105,49 @@ private fun LauncherContent() {
 
     val weather by rememberWeather()
     val notifs by NotificationState.items.collectAsState()
-    val dialogOpen = rememberUpdatedState(menuPkg != null || showSettings || showNotifs || showVpnPicker || showScreens || showAssistant || showKey)
+    val dialogOpen = rememberUpdatedState(menuPkg != null || showSettings || showNotifs || showVpnPicker || showVpnMenu || showScreens || showAssistant || showKey)
+
+    val mainHandler = remember { Handler(Looper.getMainLooper()) }
+
+    DisposableEffect(Unit) {
+        VpnController.setListener { up -> mainHandler.post { vpnConnected = up } }
+        onDispose { VpnController.setListener(null) }
+    }
+
+    fun connectBuiltInVpn() {
+        val config = VpnProfiles.load(context)
+        if (config == null) {
+            toast(context, "Положите .conf в папку vpn приложения")
+            return
+        }
+        vpnWorking = true
+        VpnController.connect(context, config) { ok, error ->
+            mainHandler.post {
+                vpnWorking = false
+                toast(context, if (ok) "VPN включён" else "VPN: $error")
+            }
+        }
+    }
+
+    val vpnPermission = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) connectBuiltInVpn()
+        else toast(context, "Без разрешения VPN не включится")
+    }
+
+    fun toggleBuiltInVpn() {
+        if (vpnConnected) {
+            vpnWorking = true
+            VpnController.disconnect { ok, error ->
+                mainHandler.post {
+                    vpnWorking = false
+                    toast(context, if (ok) "VPN выключен" else "VPN: $error")
+                }
+            }
+        } else {
+            val prepare = VpnService.prepare(context)
+            if (prepare != null) vpnPermission.launch(prepare) else connectBuiltInVpn()
+        }
+    }
 
     // «Назад» не закрывает лаунчер (диалоги закрываются сами)
     BackHandler(true) {}
@@ -147,20 +203,12 @@ private fun LauncherContent() {
                 onLauncherSettings = { showSettings = true },
                 onScreens = { showScreens = true },
                 onAssistant = { showAssistant = true },
-                onVpn = {
-                    // A held OK opens the picker; the key-up that follows fires the normal click as well. While the
-                    // picker is open that click must do nothing, or the menu closes and a VPN app starts instead
-                    // of letting you choose.
-                    if (!showVpnPicker && SystemClock.uptimeMillis() - vpnPickerOpenedAt > 800) {
-                        val p = defaultVpn
-                        if (p != null && apps.any { it.packageName == p }) launchApp(context, p)
-                        else { launchAfterPick = true; showVpnPicker = true }
-                    }
-                },
+                vpnOn = vpnConnected,
+                onVpn = { toggleBuiltInVpn() },
                 onVpnLong = {
-                    vpnPickerOpenedAt = SystemClock.uptimeMillis()
-                    launchAfterPick = false
-                    showVpnPicker = true
+                    vpnProfiles = VpnProfiles.list(context)
+                    vpnSelected = VpnProfiles.selected(context)
+                    showVpnMenu = true
                 },
                 modifier = Modifier.align(Alignment.TopCenter).padding(horizontal = 32.dp, vertical = 28.dp),
             )
@@ -191,6 +239,26 @@ private fun LauncherContent() {
             )
         }
         if (showNotifs) NotificationsDialog(notifs) { showNotifs = false }
+        if (showVpnMenu) VpnMenuDialog(
+            connected = vpnConnected,
+            working = vpnWorking,
+            profileName = vpnSelected?.name,
+            profiles = vpnProfiles,
+            selected = vpnSelected,
+            onToggle = { showVpnMenu = false; toggleBuiltInVpn() },
+            onSelect = { file ->
+                VpnProfiles.select(context, file)
+                vpnSelected = file
+                vpnProfiles = VpnProfiles.list(context)
+            },
+            onRescan = {
+                vpnProfiles = VpnProfiles.list(context)
+                vpnSelected = VpnProfiles.selected(context)
+                toast(context, if (vpnProfiles.isEmpty()) "Профили не найдены" else "Профили обновлены")
+            },
+            onOtherApps = { showVpnMenu = false; launchAfterPick = false; showVpnPicker = true },
+            onDismiss = { showVpnMenu = false },
+        )
         if (showScreens) ScreenPickerDialog(current = ScreenBridge.current(context)) { showScreens = false }
         if (showAssistant) AssistantDialog(apps) { showAssistant = false }
         if (showKey) DeepSeekKeyDialog { showKey = false }
