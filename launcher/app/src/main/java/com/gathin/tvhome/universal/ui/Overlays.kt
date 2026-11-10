@@ -306,44 +306,93 @@ fun Screensaver(wallpaperIndex: Int, weather: Weather?) {
     }
 }
 
-/** «Мой VPN»: собственный туннель AmneziaWG по профилям из папки vpn. */
+/**
+ * The VPN menu: either the launcher's own AmneziaWG tunnel (profiles, connect/stop) or, when the user picked
+ * another app as the VPN source, a shortcut to open that app. A single source setting keeps the pill's short
+ * press unambiguous: it always does what "Источник VPN" says.
+ */
 @Composable
 fun VpnMenuDialog(
     connected: Boolean,
     working: Boolean,
+    builtin: Boolean,
+    sourceLabel: String,
     profileName: String?,
     profiles: List<java.io.File>,
     selected: java.io.File?,
-    onToggle: () -> Unit,
-    onSelect: (java.io.File) -> Unit,
+    onToggleBuiltin: () -> Unit,
+    onOpenExternal: () -> Unit,
+    onSelectProfile: (java.io.File) -> Unit,
     onRescan: () -> Unit,
-    onOtherApps: () -> Unit,
+    onSource: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     val focus = rememberInitialFocus()
-    DialogPanel("Мой VPN (AmneziaWG)", onDismiss) {
+    val context = LocalContext.current
+    DialogPanel("VPN", onDismiss) {
         Text(
             when {
                 working -> "Подключаюсь…"
-                profileName == null -> "Профили не найдены. Положите .conf в папку vpn приложения."
-                else -> "Профиль: $profileName"
+                builtin && connected -> "Мой VPN (AmneziaWG) · включён"
+                builtin -> "Мой VPN (AmneziaWG)" + (profileName?.let { " · профиль $it" } ?: "")
+                else -> "Источник: $sourceLabel"
             },
             color = Color(0xCCFFFFFF),
             fontSize = 14.sp,
         )
-        MenuButton(
-            text = if (connected) "Отключить VPN" else "Подключить VPN",
-            value = if (connected) "включён" else null,
-            focusRequester = focus,
-        ) { onToggle() }
-        profiles.take(8).forEach { file ->
+        if (builtin) {
             MenuButton(
-                text = file.name,
-                value = if (file == selected) "✓" else null,
-            ) { onSelect(file) }
+                text = if (connected) "Отключить VPN" else "Подключить VPN",
+                value = if (connected) "включён" else null,
+                focusRequester = focus,
+            ) { onToggleBuiltin() }
+            profiles.take(6).forEach { file ->
+                MenuButton(
+                    text = file.name,
+                    value = if (file == selected) "✓" else null,
+                ) { onSelectProfile(file) }
+            }
+            if (profiles.isNotEmpty()) MenuButton("Обновить профили") { onRescan() }
+        } else {
+            MenuButton("Открыть $sourceLabel", focusRequester = focus) { onOpenExternal() }
         }
-        MenuButton("Обновить профили") { onRescan() }
-        MenuButton("Другие VPN-приложения") { onOtherApps() }
+        MenuButton("Источник VPN: $sourceLabel") { onSource() }
+        MenuButton("Системные настройки VPN") {
+            tryStart(context, Intent(ACTION_VPN_SETTINGS))
+        }
+        MenuButton(stringResource(R.string.uni_close)) { onDismiss() }
+    }
+}
+
+/** Picks what the VPN pill uses: the built-in AmneziaWG tunnel or an installed VPN app. */
+@Composable
+fun VpnSourceDialog(
+    current: String,
+    builtinName: String,
+    vpnApps: List<AppItem>,
+    onPick: (String) -> Unit,
+    onSystemSettings: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val focus = rememberInitialFocus()
+    DialogPanel("Источник VPN", onDismiss) {
+        Text(
+            "Кнопка VPN будет включать выбранный источник.",
+            color = Color(0xCCFFFFFF),
+            fontSize = 14.sp,
+        )
+        MenuButton(
+            text = builtinName,
+            value = if (current == "builtin") "✓" else null,
+            focusRequester = focus,
+        ) { onPick("builtin") }
+        vpnApps.forEach { app ->
+            MenuButton(
+                text = app.label,
+                value = if (current == app.packageName) "✓" else null,
+            ) { onPick(app.packageName) }
+        }
+        MenuButton("Системные настройки VPN") { onSystemSettings() }
         MenuButton(stringResource(R.string.uni_close)) { onDismiss() }
     }
 }

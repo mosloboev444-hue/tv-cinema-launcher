@@ -82,6 +82,30 @@ public final class VpnProfiles {
         }
     }
 
+
+    // ---------------- which VPN the button uses ----------------
+
+    /** The VPN pill uses the launcher's own AmneziaWG tunnel. */
+    public static final String SOURCE_BUILTIN = "builtin";
+    private static final String KEY_SOURCE = "source";
+
+    /** "builtin" or the package name of the VPN app the user picked. */
+    public static String source(Context context) {
+        String value = prefs(context).getString(KEY_SOURCE, SOURCE_BUILTIN);
+        return value == null || value.trim().isEmpty() ? SOURCE_BUILTIN : value;
+    }
+
+    public static void setSource(Context context, String source) {
+        if (source == null || source.trim().isEmpty()) source = SOURCE_BUILTIN;
+        prefs(context).edit().putString(KEY_SOURCE, source).apply();
+        // keep the older "default VPN app" preference in sync for the other screens
+        if (SOURCE_BUILTIN.equals(source)) {
+            prefs(context).edit().remove("default_vpn").apply();
+        } else {
+            prefs(context).edit().putString("default_vpn", source).apply();
+        }
+    }
+
     private static SharedPreferences prefs(Context context) {
         return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }

@@ -54,6 +54,7 @@ import com.gathin.tvhome.universal.data.saveDefaultVpn
 import com.gathin.tvhome.universal.data.saveFavorites
 import com.gathin.tvhome.universal.data.saveSettings
 import com.gathin.tvhome.universal.data.toast
+import com.gathin.tvhome.universal.data.tryStart
 import com.gathin.tvhome.vpn.VpnController
 import com.gathin.tvhome.vpn.VpnProfiles
 import java.io.File
@@ -87,8 +88,8 @@ private fun LauncherContent() {
     var menuPkg by remember { mutableStateOf<String?>(null) }
     var showSettings by remember { mutableStateOf(false) }
     var showNotifs by remember { mutableStateOf(false) }
-    var showVpnPicker by remember { mutableStateOf(false) }
     var showVpnMenu by remember { mutableStateOf(false) }
+    var showVpnSource by remember { mutableStateOf(false) }
     var showScreens by remember { mutableStateOf(false) }
     var showAssistant by remember { mutableStateOf(false) }
     var showKey by remember { mutableStateOf(false) }
@@ -97,15 +98,16 @@ private fun LauncherContent() {
     var vpnWorking by remember { mutableStateOf(false) }
     var vpnProfiles by remember { mutableStateOf(VpnProfiles.list(context)) }
     var vpnSelected by remember { mutableStateOf(VpnProfiles.selected(context)) }
-    var launchAfterPick by remember { mutableStateOf(false) }
-    // CleanYourTV's configured VPN app is the universal screen's default one, until changed here.
-    var defaultVpn by remember { mutableStateOf(loadDefaultVpn(context) ?: ScreenBridge.defaultVpn(context)) }
+    // What the VPN pill uses: the built-in AmneziaWG tunnel ("builtin") or an installed VPN app's package.
+    var vpnSource by remember { mutableStateOf(VpnProfiles.source(context)) }
     val vpnPackages = remember { findVpnPackages(context) }
+    val vpnSourceLabel = if (vpnSource == VpnProfiles.SOURCE_BUILTIN) "Мой VPN (AmneziaWG)"
+        else apps.find { it.packageName == vpnSource }?.label ?: vpnSource
     var autoIdx by remember { mutableIntStateOf(0) }
 
     val weather by rememberWeather()
     val notifs by NotificationState.items.collectAsState()
-    val dialogOpen = rememberUpdatedState(menuPkg != null || showSettings || showNotifs || showVpnPicker || showVpnMenu || showScreens || showAssistant || showKey)
+    val dialogOpen = rememberUpdatedState(menuPkg != null || showSettings || showNotifs || showVpnMenu || showVpnSource || showScreens || showAssistant || showKey)
 
     val mainHandler = remember { Handler(Looper.getMainLooper()) }
 
@@ -146,6 +148,21 @@ private fun LauncherContent() {
         } else {
             val prepare = VpnService.prepare(context)
             if (prepare != null) vpnPermission.launch(prepare) else connectBuiltInVpn()
+        }
+    }
+
+    /** The pill does exactly what the chosen VPN source says: built-in tunnel or the selected app. */
+    fun toggleVpn() {
+        if (vpnSource == VpnProfiles.SOURCE_BUILTIN) {
+            toggleBuiltInVpn()
+            return
+        }
+        val pkg = vpnSource
+        if (apps.any { it.packageName == pkg }) {
+            launchApp(context, pkg)
+        } else {
+            toast(context, "VPN-приложение не найдено — выберите источник")
+            showVpnMenu = true
         }
     }
 
@@ -204,7 +221,7 @@ private fun LauncherContent() {
                 onScreens = { showScreens = true },
                 onAssistant = { showAssistant = true },
                 vpnOn = vpnConnected,
-                onVpn = { toggleBuiltInVpn() },
+                onVpn = { toggleVpn() },
                 onVpnLong = {
                     vpnProfiles = VpnProfiles.list(context)
                     vpnSelected = VpnProfiles.selected(context)
@@ -242,11 +259,14 @@ private fun LauncherContent() {
         if (showVpnMenu) VpnMenuDialog(
             connected = vpnConnected,
             working = vpnWorking,
+            builtin = vpnSource == VpnProfiles.SOURCE_BUILTIN,
+            sourceLabel = vpnSourceLabel,
             profileName = vpnSelected?.name,
             profiles = vpnProfiles,
             selected = vpnSelected,
-            onToggle = { showVpnMenu = false; toggleBuiltInVpn() },
-            onSelect = { file ->
+            onToggleBuiltin = { showVpnMenu = false; toggleBuiltInVpn() },
+            onOpenExternal = { showVpnMenu = false; toggleVpn() },
+            onSelectProfile = { file ->
                 VpnProfiles.select(context, file)
                 vpnSelected = file
                 vpnProfiles = VpnProfiles.list(context)
@@ -256,28 +276,27 @@ private fun LauncherContent() {
                 vpnSelected = VpnProfiles.selected(context)
                 toast(context, if (vpnProfiles.isEmpty()) "Профили не найдены" else "Профили обновлены")
             },
-            onOtherApps = { showVpnMenu = false; launchAfterPick = false; showVpnPicker = true },
+            onSource = { showVpnMenu = false; showVpnSource = true },
             onDismiss = { showVpnMenu = false },
         )
-        if (showScreens) ScreenPickerDialog(current = ScreenBridge.current(context)) { showScreens = false }
-        if (showAssistant) AssistantDialog(apps) { showAssistant = false }
-        if (showKey) DeepSeekKeyDialog { showKey = false }
-        if (showVpnPicker) {
-            VpnPickerDialog(
-                apps = apps,
-                vpnPackages = vpnPackages,
-                current = defaultVpn,
-                onPick = { pkg ->
-                    defaultVpn = pkg
-                    saveDefaultVpn(context, pkg)
-                    showVpnPicker = false
-                    SoundFx.play(Sound.FAVORITE)
-                    val label = apps.find { it.packageName == pkg }?.label ?: pkg
-                    if (launchAfterPick) launchApp(context, pkg)
-                    else toast(context, context.getString(R.string.uni_vpn_set_toast, label))
-                },
-                onDismiss = { showVpnPicker = false },
-            )
-        }
+        if (showVpnSource) VpnSourceDialog(
+            current = vpnSource,
+            builtinName = "Мой VPN (AmneziaWG)",
+            vpnApps = apps.filter { it.packageName in vpnPackages }.sortedBy { it.label },
+            onPick = { picked ->
+                VpnProfiles.setSource(context, picked)
+                vpnSource = picked
+                showVpnSource = false
+                // Switching away from the built-in tunnel must stop it: two VPNs cannot run at once, and the
+                // picker would otherwise leave our tunnel up while opening another app.
+                if (picked != VpnProfiles.SOURCE_BUILTIN && vpnConnected) {
+                    VpnController.disconnect { _, _ -> mainHandler.post { vpnConnected = false } }
+                }
+                toast(context, "Источник VPN: " + (if (picked == VpnProfiles.SOURCE_BUILTIN) "Мой VPN" else
+                    apps.find { it.packageName == picked }?.label ?: picked))
+            },
+            onSystemSettings = { tryStart(context, android.content.Intent(android.provider.Settings.ACTION_VPN_SETTINGS)) },
+            onDismiss = { showVpnSource = false },
+        )
     }
 }

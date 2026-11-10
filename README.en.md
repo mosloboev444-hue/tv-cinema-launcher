@@ -72,11 +72,11 @@ More: [weather/focus](screenshots/home-cinema-weather-focus.png),
 ## Install
 
 Download the APK from [Releases](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
-(`CleanYourTV-ThreeScreens-4.1.0.apk`, 7.2 MB, versionCode 19 / 4.1.0) and install it:
+(`CleanYourTV-ThreeScreens-4.1.1.apk`, 7.2 MB, versionCode 20 / 4.1.1) and install it:
 
 ```bash
 adb connect 192.168.0.39:5555
-adb install -r CleanYourTV-ThreeScreens-4.1.0.apk
+adb install -r CleanYourTV-ThreeScreens-4.1.1.apk
 ```
 
 It is signed with the same debug key as previous CleanYourTV 3.2/3.4 builds, so it installs as an update:
@@ -126,6 +126,10 @@ built on AmneziaWG (WireGuard with DPI obfuscation), the engine from
 [SlimVPN](https://github.com/mosloboev444-hue/slimvpn).
 
 - **Press once** to connect, once more to disconnect; the pill is green while the tunnel is up.
+**How the pill works.** It acts on what “VPN source” says: “My VPN (AmneziaWG)” raises the
+built-in tunnel; any other app is opened instead. Switching away from the built-in tunnel stops it,
+so two VPNs never run at once.
+
 - **Hold OK** for the “My VPN” menu: `.conf` profiles, the active one, “Refresh profiles”,
   “Other VPN apps” and the system VPN settings.
 
