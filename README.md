@@ -5,6 +5,7 @@
 **Домашний экран для Android TV: карусель приложений по кругу, стеклянный док, часы, погода и VPN — как в видео.**
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
+[![Сайт проекта](https://img.shields.io/badge/сайт-online-6ed6ff?style=flat-square)](https://mosloboev444-hue.github.io/tv-cinema-launcher/)
 [![APK](https://img.shields.io/badge/APK-588%20KB-0aa1dd?style=flat-square)](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
 [![Android TV](https://img.shields.io/badge/Android%20TV-8.0%2B-3ddc84?style=flat-square)](https://developer.android.com/tv)
 [![Без рекламы](https://img.shields.io/badge/ads-none-critical?style=flat-square)](#)

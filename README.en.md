@@ -5,6 +5,7 @@
 **An Android TV home screen: an endless app carousel, frosted dock, clock, weather and a VPN button — as in the reference video.**
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
+[![Project site](https://img.shields.io/badge/site-online-6ed6ff?style=flat-square)](https://mosloboev444-hue.github.io/tv-cinema-launcher/)
 [![APK](https://img.shields.io/badge/APK-588%20KB-0aa1dd?style=flat-square)](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
 [![Android TV](https://img.shields.io/badge/Android%20TV-8.0%2B-3ddc84?style=flat-square)](https://developer.android.com/tv)
 [![No ads](https://img.shields.io/badge/ads-none-critical?style=flat-square)](#)
