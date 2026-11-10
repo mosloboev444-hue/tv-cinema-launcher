@@ -1,6 +1,7 @@
 package com.gathin.tvhome.universal.ui
 
 import android.content.Context
+import android.os.SystemClock
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,6 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -117,4 +124,48 @@ fun InfoPill(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
             .padding(horizontal = 16.dp, vertical = 8.dp),
         contentAlignment = Alignment.Center,
     ) { content() }
+}
+
+
+/**
+ * OK on the remote for cards and pills that have a second action.
+ *
+ * The long action runs when the key is *released*, not while it is held: on a real remote a held OK keeps
+ * repeating, and once the menu was already open those repeats (and the release) landed in the new dialog and
+ * clicked its first row — the menu seemed to close by itself. Handling the key here, before the Surface's own
+ * click handling, keeps every key event of the press away from both the pill and the dialog.
+ */
+@Composable
+fun Modifier.rememberTvOkGestures(onTap: () -> Unit, onLongPress: () -> Unit): Modifier {
+    val downAt = remember { mutableStateOf(0L) }
+    val sawLongSignal = remember { mutableStateOf(false) }
+    val tap = rememberUpdatedState(onTap)
+    val longPress = rememberUpdatedState(onLongPress)
+    return this.onPreviewKeyEvent { event ->
+        if (event.key != Key.DirectionCenter && event.key != Key.Enter) {
+            false
+        } else {
+            val native = event.nativeKeyEvent
+            val longFlag = native != null &&
+                (native.flags and android.view.KeyEvent.FLAG_LONG_PRESS) != 0
+            when (event.type) {
+                KeyEventType.KeyDown -> {
+                    if (native == null || native.repeatCount == 0) {
+                        downAt.value = SystemClock.uptimeMillis()
+                        sawLongSignal.value = longFlag
+                    } else {
+                        // Held keys repeat; some remotes only signal a long press this way.
+                        sawLongSignal.value = true
+                    }
+                    true
+                }
+                KeyEventType.KeyUp -> {
+                    val held = SystemClock.uptimeMillis() - downAt.value
+                    if (held >= 400L || sawLongSignal.value || longFlag) longPress.value() else tap.value()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
 }

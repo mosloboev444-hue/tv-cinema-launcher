@@ -28,6 +28,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -92,7 +93,7 @@ private fun AppRow(title: String, apps: List<AppItem>, emptyHint: String, onMenu
         ) {
             items(apps, key = { "$title/${it.packageName}" }) { app ->
                 Surface(
-                    onClick = { SoundFx.play(Sound.SELECT); onOpen(app.packageName) },
+                    onClick = { SoundFx.play(Sound.SELECT); onOpen(app.packageName) },   // pointer only
                     onLongClick = { onMenu(app.packageName) },
                     shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(10.dp)),
                     border = ClickableSurfaceDefaults.border(
@@ -106,6 +107,10 @@ private fun AppRow(title: String, apps: List<AppItem>, emptyHint: String, onMenu
                     scale = ClickableSurfaceDefaults.scale(focusedScale = 1.09f),
                     modifier = Modifier
                         .size(width = 160.dp, height = 90.dp)
+                        .rememberTvOkGestures(
+                            onTap = { SoundFx.play(Sound.SELECT); onOpen(app.packageName) },
+                            onLongPress = { onMenu(app.packageName) },
+                        )
                         .then(if (firstTile != null && app == apps.firstOrNull()) Modifier.focusRequester(firstTile) else Modifier)
                         .onFocusChanged { if (it.hasFocus) SoundFx.play(Sound.FOCUS) },
                 ) {
@@ -120,6 +125,19 @@ private fun AppRow(title: String, apps: List<AppItem>, emptyHint: String, onMenu
 @Composable
 private fun AppImage(app: AppItem) {
     val context = LocalContext.current
+    // The karaoke tile keeps its own animated fire banner (the same drawable as the cinema carousel).
+    if (app.packageName == context.getString(R.string.fire_app)) {
+        AndroidView(
+            factory = { ctx ->
+                android.widget.ImageView(ctx).apply {
+                    scaleType = android.widget.ImageView.ScaleType.FIT_XY
+                    setImageDrawable(com.gathin.tvhome.FireBannerDrawable())
+                }
+            },
+            modifier = Modifier.fillMaxSize(),
+        )
+        return
+    }
     // размер картинки подстраивается под плотность экрана (HD / Full HD / 4K)
     val w = (160f * LocalDensity.current.density).coerceIn(224f, 320f).toInt()
     val h = w * 9 / 16
