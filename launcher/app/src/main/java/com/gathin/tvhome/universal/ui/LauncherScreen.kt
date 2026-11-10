@@ -148,7 +148,10 @@ private fun LauncherContent() {
                 onScreens = { showScreens = true },
                 onAssistant = { showAssistant = true },
                 onVpn = {
-                    if (SystemClock.uptimeMillis() - vpnPickerOpenedAt > 1200) {
+                    // A held OK opens the picker; the key-up that follows fires the normal click as well. While the
+                    // picker is open that click must do nothing, or the menu closes and a VPN app starts instead
+                    // of letting you choose.
+                    if (!showVpnPicker && SystemClock.uptimeMillis() - vpnPickerOpenedAt > 800) {
                         val p = defaultVpn
                         if (p != null && apps.any { it.packageName == p }) launchApp(context, p)
                         else { launchAfterPick = true; showVpnPicker = true }
@@ -165,6 +168,7 @@ private fun LauncherContent() {
                 apps = apps,
                 favorites = favItems,
                 onMenu = { menuPkg = it },
+                onOpen = { pkg -> if (menuPkg == null) launchApp(context, pkg) },
                 modifier = Modifier.align(Alignment.BottomStart).padding(start = 40.dp, end = 24.dp, bottom = 32.dp),
             )
             if (LauncherState.screensaver) Screensaver(wallpaperIndex, weather)

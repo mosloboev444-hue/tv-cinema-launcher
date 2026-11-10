@@ -43,7 +43,6 @@ import com.gathin.tvhome.universal.data.AppItem
 import com.gathin.tvhome.universal.data.IconCache
 import com.gathin.tvhome.universal.data.Sound
 import com.gathin.tvhome.universal.data.SoundFx
-import com.gathin.tvhome.universal.data.launchApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -52,6 +51,7 @@ fun Dock(
     apps: List<AppItem>,
     favorites: List<AppItem>,
     onMenu: (String) -> Unit,
+    onOpen: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // Home should open with a tile focused, like the stock launchers do — not on a header button.
@@ -69,14 +69,14 @@ fun Dock(
         }
     }
     Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(20.dp)) {
-        AppRow(stringResource(R.string.uni_favorites), favorites, stringResource(R.string.uni_favorites_hint), onMenu, firstTile)
-        AppRow(stringResource(R.string.uni_all_apps), apps, "", onMenu, if (favorites.isEmpty()) firstTile else null)
+        AppRow(stringResource(R.string.uni_favorites), favorites, stringResource(R.string.uni_favorites_hint), onMenu, onOpen, firstTile)
+        AppRow(stringResource(R.string.uni_all_apps), apps, "", onMenu, onOpen, if (favorites.isEmpty()) firstTile else null)
     }
 }
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-private fun AppRow(title: String, apps: List<AppItem>, emptyHint: String, onMenu: (String) -> Unit, firstTile: FocusRequester? = null) {
+private fun AppRow(title: String, apps: List<AppItem>, emptyHint: String, onMenu: (String) -> Unit, onOpen: (String) -> Unit, firstTile: FocusRequester? = null) {
     val context = LocalContext.current
     Column(Modifier.fillMaxWidth()) {
         Text(title, color = Color.White, fontSize = 20.sp,
@@ -92,7 +92,7 @@ private fun AppRow(title: String, apps: List<AppItem>, emptyHint: String, onMenu
         ) {
             items(apps, key = { "$title/${it.packageName}" }) { app ->
                 Surface(
-                    onClick = { SoundFx.play(Sound.SELECT); launchApp(context, app.packageName) },
+                    onClick = { SoundFx.play(Sound.SELECT); onOpen(app.packageName) },
                     onLongClick = { onMenu(app.packageName) },
                     shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(10.dp)),
                     border = ClickableSurfaceDefaults.border(
@@ -124,7 +124,7 @@ private fun AppImage(app: AppItem) {
     val w = (160f * LocalDensity.current.density).coerceIn(224f, 320f).toInt()
     val h = w * 9 / 16
     val bitmap by produceState<ImageBitmap?>(IconCache.get(app.packageName), app.packageName) {
-        if (value == null) value = withContext(Dispatchers.IO) { IconCache.load(context, app.packageName, w, h) }
+        if (value == null) value = withContext(Dispatchers.IO) { IconCache.load(context, app.packageName, app.label, w, h) }
     }
     val b = bitmap
     if (b != null) {

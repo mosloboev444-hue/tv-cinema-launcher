@@ -77,13 +77,13 @@
 ## Установка
 
 **Скачать:** [APK из Releases](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest) —
-`CleanYourTV-ThreeScreens-4.0.1.apk` (2.1 МБ, versionCode 15 / 4.0.1).
+`CleanYourTV-ThreeScreens-4.0.2.apk` (2.1 МБ, versionCode 16 / 4.0.2).
 
 Поставить по ADB на телевизор:
 
 ```bash
 adb connect 192.168.0.39:5555        # порт ADB на вашем ТВ
-adb install -r CleanYourTV-ThreeScreens-4.0.1.apk
+adb install -r CleanYourTV-ThreeScreens-4.0.2.apk
 ```
 
 Или скопировать APK на флешку и установить любым файловым менеджером (например, X-plore).
@@ -211,7 +211,7 @@ adb shell am force-stop com.gathin.tvhome && adb shell input keyevent KEYCODE_HO
 ## Структура репозитория
 
 ```
-apk/            CleanYourTV-ThreeScreens-4.0.1.apk  — готовая сборка
+apk/            CleanYourTV-ThreeScreens-4.0.2.apk  — готовая сборка
 launcher/       исходники (Java + Kotlin/Compose: CleanYourTV 3.4 + универсальный экран)
 screenshots/    скриншоты с телевизора
 wallpapers/     обои (1080p и 4K)
