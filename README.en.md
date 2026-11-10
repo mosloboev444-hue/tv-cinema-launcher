@@ -72,11 +72,11 @@ More: [weather/focus](screenshots/home-cinema-weather-focus.png),
 ## Install
 
 Download the APK from [Releases](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
-(`CleanYourTV-ThreeScreens-4.1.4.apk`, 7.2 MB, versionCode 23 / 4.1.4) and install it:
+(`CleanYourTV-ThreeScreens-4.1.5.apk`, 7.2 MB, versionCode 24 / 4.1.5) and install it:
 
 ```bash
 adb connect 192.168.0.39:5555
-adb install -r CleanYourTV-ThreeScreens-4.1.4.apk
+adb install -r CleanYourTV-ThreeScreens-4.1.5.apk
 ```
 
 It is signed with the same debug key as previous CleanYourTV 3.2/3.4 builds, so it installs as an update:

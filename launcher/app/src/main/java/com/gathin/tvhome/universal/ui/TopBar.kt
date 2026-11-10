@@ -168,16 +168,20 @@ private fun VpnPill(vpnOn: Boolean, label: String, onTap: () -> Unit, onLongPres
             )
             .onFocusChanged { if (it.hasFocus) SoundFx.play(Sound.FOCUS) },
     ) {
+        // Height = the capsule height, so the row is exactly as tall as the pill and its content is
+        // centred vertically (without this the Surface placed the content at the top).
         Row(
-            Modifier.padding(horizontal = 14.dp),
+            Modifier
+                .height(44.dp)
+                .padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(7.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(20.dp))
+            Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(18.dp))
             Text(
                 if (vpnOn) "$label · вкл" else label,
                 color = Color.White,
-                fontSize = 13.sp,
+                fontSize = 12.sp,
                 maxLines = 1,
                 softWrap = false,
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
