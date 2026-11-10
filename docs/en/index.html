@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TV Cinema Launcher — an Android TV home screen</title>
+<meta name="description" content="Android TV launcher: endless app carousel, frosted dock, weather, VPN, two home screens. A CleanYourTV fork. 588 KB, no ads, no accounts.">
+<meta property="og:title" content="TV Cinema Launcher — an Android TV home screen">
+<meta property="og:description" content="Endless app carousel, frosted dock, weather and VPN. A CleanYourTV fork. 588 KB, no ads.">
+<meta property="og:image" content="../img/social-preview.png">
+<meta property="og:type" content="website">
+<style>
+  :root {
+    --bg:#0a0b0f; --card:#14161d; --card2:#101219; --line:#242833;
+    --text:#eef2f8; --dim:#9aa6b8; --gold:#ffd166; --gold2:#ff9f43; --blue:#6ed6ff;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; background:
+      radial-gradient(1100px 500px at 75% -10%, #2a1f08 0%, transparent 60%),
+      radial-gradient(900px 480px at 5% 8%, #0d2430 0%, transparent 55%),
+      var(--bg); color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; line-height:1.55; }
+  .wrap { max-width:1040px; margin:0 auto; padding:34px 20px 64px; }
+  header { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .logo { width:58px; height:58px; border-radius:16px;
+          background:linear-gradient(135deg,var(--gold),var(--gold2)); color:#141006;
+          font-weight:900; font-size:26px; display:flex; align-items:center; justify-content:center;
+          box-shadow:0 8px 30px rgba(255,159,67,.25); }
+  h1 { font-size:34px; margin:0; letter-spacing:-0.6px; }
+  .sub { color:var(--dim); margin:6px 0 26px; font-size:17px; }
+  .lang { margin-top:8px; font-size:14px; }
+  .cta { display:flex; gap:12px; flex-wrap:wrap; margin:26px 0 34px; }
+  .btn { display:inline-block; padding:14px 22px; border-radius:12px; text-decoration:none; font-weight:600; }
+  .btn-primary { background:linear-gradient(135deg,var(--gold),var(--gold2)); color:#17120a; }
+  .btn-primary:hover { filter:brightness(1.06); }
+  .btn-ghost { border:1px solid #2c3342; color:var(--text); }
+  .btn-ghost:hover { border-color:#3d475c; }
+  img.shot { width:100%; border-radius:16px; border:1px solid var(--line); display:block;
+             box-shadow:0 24px 70px rgba(0,0,0,.55); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin:26px 0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; }
+  .card h3 { margin:0 0 8px; font-size:16px; }
+  .card p { margin:0; color:var(--dim); font-size:14px; }
+  .split { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:22px 0; }
+  @media (max-width:760px){ .split { grid-template-columns:1fr; } }
+  .cap { color:var(--dim); font-size:13.5px; margin-top:9px; }
+  .cap b { color:var(--text); font-weight:600; }
+  h2 { margin-top:48px; font-size:23px; letter-spacing:-0.3px; }
+  h2 .num { color:var(--gold); margin-right:8px; }
+  code { background:#12151d; padding:2px 6px; border-radius:6px; font-size:13px; color:#e9eef7; }
+  pre { background:#10131a; border:1px solid var(--line); padding:16px; border-radius:12px; overflow:auto; }
+  pre code { background:none; padding:0; color:#dbe3ef; }
+  a { color:var(--blue); }
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:14.5px; }
+  th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); }
+  th { color:var(--dim); font-weight:600; font-size:13px; text-transform:uppercase; letter-spacing:.04em; }
+  td.good { color:var(--gold); font-weight:700; }
+  .chips { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:18px 0; }
+  @media (max-width:760px){ .chips { grid-template-columns:1fr; } }
+  .chipcard { background:var(--card2); border:1px solid var(--line); border-radius:14px; padding:12px; }
+  .chipcard img { width:100%; display:block; border-radius:10px; }
+  .note { background:#14161d; border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:10px;
+          padding:14px 16px; color:var(--dim); font-size:14px; margin:18px 0; }
+  footer { margin-top:56px; color:var(--dim); font-size:14px; border-top:1px solid var(--line); padding-top:22px; }
+  footer a { color:var(--dim); }
+  footer a:hover { color:var(--text); }
+  .pills { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .pill { font-size:12px; color:var(--dim); border:1px solid var(--line); border-radius:999px; padding:5px 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">C</div>
+    <div>
+      <h1>TV Cinema Launcher</h1>
+      <div class="sub">An Android TV home screen · app carousel · frosted dock · weather · VPN</div>
+      <div class="lang"><a href="../">Русская версия →</a></div>
+    </div>
+  </header>
+
+  <div class="cta">
+    <a class="btn btn-primary" href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest/download/CleanYourTV-TwoScreens-3.4.apk">Download APK · 588 KB</a>
+    <a class="btn btn-ghost" href="https://github.com/mosloboev444-hue/tv-cinema-launcher">Source on GitHub</a>
+    <a class="btn btn-ghost" href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/tag/v3.4">What's new in 3.4</a>
+  </div>
+
+  <img class="shot" src="../img/cinema.webp" alt="Cinema screen: clock, weather, round buttons, frosted dock and the app carousel">
+
+  <div class="pills">
+    <span class="pill">Android TV 8.0+</span>
+    <span class="pill">versionCode 13 · 3.4</span>
+    <span class="pill">MIT</span>
+    <span class="pill">no ads</span>
+    <span class="pill">no accounts</span>
+    <span class="pill">same signature as CleanYourTV</span>
+  </div>
+
+  <h2><span class="num">01</span>What's inside</h2>
+  <div class="grid">
+    <div class="card"><h3>Endless carousel</h3><p>Every installed app in a ring: 7 tiles on screen, and the end of the list eases into the beginning.</p></div>
+    <div class="card"><h3>Two screens</h3><p>“Cinema” from the reference video and “Classic” — the previous CleanYourTV 3.2 home. Switch with the remote, the choice is remembered.</p></div>
+    <div class="card"><h3>Weather in the header</h3><p>A glass chip: icon, temperature, short description. City by public IP, 30-minute cache.</p></div>
+    <div class="card"><h3>VPN button</h3><p>A round button: green = VPN on, red = off. Opens the configured VPN app.</p></div>
+    <div class="card"><h3>Carousel sounds</h3><p>A soft tick on focus change and a deeper confirm thud on OK. Synthesised in code, no audio files.</p></div>
+    <div class="card"><h3>Smoothness</h3><p>5.46 % janky frames, 11 ms median, 28 ms p90, 0 missed vsync. The carousel never re-runs layout.</p></div>
+  </div>
+
+  <h2><span class="num">02</span>Two home screens</h2>
+  <div class="split">
+    <div>
+      <img class="shot" src="../img/cinema.webp" alt="Cinema screen">
+      <div class="cap"><b>“Cinema”</b> — clock and date in the corner, weather, round buttons, frosted dock over the photo wallpaper, endless carousel.</div>
+    </div>
+    <div>
+      <img class="shot" src="../img/classic.webp" alt="Classic screen">
+      <div class="cap"><b>“Classic”</b> — the previous CleanYourTV 3.2 home: greeting, dock cards, app rows.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">03</span>Carousel in motion</h2>
+  <p>Apps go round in a ring: the end of the list eases into the beginning, the focused tile grows and gets a white ring. Recorded on the TV (YouTube → Kinopoisk → VK Video → RuTube):</p>
+  <img class="shot" src="../img/carousel.gif" alt="App carousel in motion: YouTube, Kinopoisk, VK Video, RuTube" loading="lazy">
+  <div class="cap">Recorded on a Philips 50PUS8057/60; it is smoother in person — 12 fps here is a GIF limit.</div>
+
+  <h2><span class="num">04</span>Name badge</h2>
+  <p>Above the focused tile — a neutral name in the screen's own style. Two variants, switched in the same menu:</p>
+  <div class="chips">
+    <div class="chipcard"><img src="../img/chip-glass.webp" alt="Glass badge"><div class="cap"><b>“Glass”</b> — a dark glass chip (default)</div></div>
+    <div class="chipcard"><img src="../img/chip-none.webp" alt="Text-only badge"><div class="cap"><b>“Text only”</b> — just the name with a soft shadow</div></div>
+  </div>
+
+  <h2><span class="num">05</span>Switching screens</h2>
+  <div class="split">
+    <div>
+      <p>Hold <b>OK</b> on the “Settings” button in the header — a menu opens:</p>
+      <ul>
+        <li><b>“Badge: …”</b> — name style (Cinema screen only);</li>
+        <li><b>“Screen: Cinema / Classic”</b> — switch the home screen;</li>
+        <li>plus the launcher settings and app cards.</li>
+      </ul>
+      <p>The choice is remembered across reboots.</p>
+    </div>
+    <div>
+      <img class="shot" src="../img/menu.webp" alt="Screen switch menu">
+      <div class="cap">The menu opens on a held OK on Settings.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">06</span>Weather and privacy</h2>
+  <div class="split">
+    <div>
+      <p>No API keys: the city comes from the public IP (<code>ipwho.is</code>), the forecast from
+      <code>wttr.in</code> with <code>api.met.no</code> as a fallback. The reading is cached for 30 minutes and shown
+      immediately when you come back Home.</p>
+      <div class="note">The launcher gained the <b>INTERNET</b> permission for this request only. There is no other
+      network access: no telemetry, no analytics, no background services. Offline, the last reading stays.</div>
+    </div>
+    <div>
+      <img class="shot" src="../img/weather.webp" alt="Weather chip and header focus">
+      <div class="cap">The weather chip and header focus.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">07</span>Smoothness</h2>
+  <table>
+    <tr><th>Metric</th><th>Before (grid)</th><th>After (carousel)</th></tr>
+    <tr><td>Janky frames</td><td>36.5 %</td><td class="good">5.46 %</td></tr>
+    <tr><td>Median frame</td><td>22 ms</td><td class="good">11 ms</td></tr>
+    <tr><td>90th percentile</td><td>46 ms</td><td class="good">28 ms</td></tr>
+    <tr><td>Missed vsync</td><td>2</td><td class="good">0</td></tr>
+  </table>
+  <div class="cap">Measured on a Philips 50PUS8057/60 (Android TV 14), 12 carousel turns, <code>dumpsys gfxinfo</code>.</div>
+
+  <h2><span class="num">08</span>Install</h2>
+  <p>Download the APK and install it over ADB (or from a USB stick with any file manager):</p>
+  <pre><code>adb connect 192.168.0.39:5555
+adb install -r CleanYourTV-TwoScreens-3.4.apk</code></pre>
+  <div class="note">The APK is signed with the same debug key as previous CleanYourTV 3.2/3.4 builds, so it installs
+  as an update: the Home role, settings and data are kept. Requires Android TV 8.0+ (minSdk 26, targetSdk 34).</div>
+
+  <h2><span class="num">09</span>Build from source</h2>
+  <pre><code>git clone https://github.com/mosloboev444-hue/tv-cinema-launcher
+cd tv-cinema-launcher/launcher
+echo "sdk.dir=/path/to/Android/Sdk" &gt; local.properties
+./gradlew assembleRelease</code></pre>
+  <p class="cap">Needs JDK 17+ and Android SDK 34. Patches against a clean upstream 3.4 live in <code>patch/</code>.</p>
+
+  <footer>
+    <p><b>MIT</b> · based on <a href="https://github.com/Gathin23/cleanyourtv">CleanYourTV</a> © 2026 Gathin (MIT).<br>
+    Wallpapers: <a href="https://wallhaven.cc/w/d6yz6j">Wallhaven</a>, rights belong to their owners. The karaoke tile and
+    VPN gate come from <a href="https://github.com/mosloboev444-hue/android-tv-youtube-vpn-karaoke">android-tv-youtube-vpn-karaoke</a>.</p>
+    <p><a href="https://github.com/mosloboev444-hue/tv-cinema-launcher">GitHub</a> ·
+       <a href="https://github.com/mosloboev444-hue/tv-cinema-launcher/releases">Releases</a> ·
+       <a href="https://github.com/mosloboev444-hue/tv-cinema-launcher/blob/main/README.en.md">README</a> ·
+       <a href="https://github.com/mosloboev444-hue/tv-cinema-launcher/blob/main/LICENSE">License</a></p>
+    <p>More projects: <a href="https://github.com/mosloboev444-hue/slimhome">SlimHome</a> ·
+       <a href="https://github.com/mosloboev444-hue/slimtube">SlimTube</a> ·
+       <a href="https://github.com/mosloboev444-hue/slimiptv">SlimIPTV</a> ·
+       <a href="https://github.com/mosloboev444-hue/slimvpn">SlimVPN</a> ·
+       <a href="https://github.com/mosloboev444-hue/slimtv-suite">SlimTV Suite</a></p>
+  </footer>
+
+</div>
+</body>
+</html>

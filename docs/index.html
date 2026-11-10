@@ -65,6 +65,7 @@
   footer a { color:var(--dim); }
   footer a:hover { color:var(--text); }
   .pills { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .lang { margin-top:8px; font-size:14px; }
   .pill { font-size:12px; color:var(--dim); border:1px solid var(--line); border-radius:999px; padding:5px 10px; }
   .ok { color:#7ee2a8; }
 </style>
@@ -77,6 +78,7 @@
     <div>
       <h1>TV Cinema Launcher</h1>
       <div class="sub">Домашний экран для Android TV · карусель приложений · стеклянный док · погода · VPN</div>
+      <div class="lang"><a href="en/">English version →</a></div>
     </div>
   </header>
 
@@ -119,14 +121,20 @@
     </div>
   </div>
 
-  <h2><span class="num">03</span>Плашка с названием</h2>
+  <h2><span class="num">03</span>Карусель в движении</h2>
+  <p>Приложения идут по кругу: конец списка плавно переходит в начало, выбранная плитка увеличивается и
+  получает белое кольцо. Запись с телевизора (YouTube → Кинопоиск → VK Видео → RuTube):</p>
+  <img class="shot" src="img/carousel.gif" alt="Карусель приложений в движении: YouTube, Кинопоиск, VK Видео, RuTube" loading="lazy">
+  <div class="cap">Записано на Philips 50PUS8057/60; вживую анимация плавнее — 12 fps здесь ограничены GIF.</div>
+
+  <h2><span class="num">04</span>Плашка с названием</h2>
   <p>Над выбранной плиткой — нейтральное название в стиле экрана. Два варианта, переключение там же в меню:</p>
   <div class="chips">
     <div class="chipcard"><img src="img/chip-glass.webp" alt="Плашка «Стекло»"><div class="cap"><b>«Стекло»</b> — тёмная стеклянная плашка (по умолчанию)</div></div>
     <div class="chipcard"><img src="img/chip-none.webp" alt="Плашка «Без фона»"><div class="cap"><b>«Без фона»</b> — только название с мягкой тенью</div></div>
   </div>
 
-  <h2><span class="num">04</span>Переключение экранов</h2>
+  <h2><span class="num">05</span>Переключение экранов</h2>
   <div class="split">
     <div>
       <p>Удерживайте <b>ОК</b> на кнопке «Настройки» в шапке — откроется меню:</p>
@@ -143,7 +151,7 @@
     </div>
   </div>
 
-  <h2><span class="num">05</span>Погода и приватность</h2>
+  <h2><span class="num">06</span>Погода и приватность</h2>
   <div class="split">
     <div>
       <p>Погода берётся без API-ключей: город определяется по публичному IP (<code>ipwho.is</code>), прогноз — из
@@ -158,7 +166,7 @@
     </div>
   </div>
 
-  <h2><span class="num">06</span>Плавность</h2>
+  <h2><span class="num">07</span>Плавность</h2>
   <table>
     <tr><th>Метрика</th><th>Было (сетка)</th><th>Стало (карусель)</th></tr>
     <tr><td>«Дёрганые» кадры</td><td>36.5 %</td><td class="good">5.46 %</td></tr>
@@ -168,14 +176,14 @@
   </table>
   <div class="cap">Замеры на Philips 50PUS8057/60 (Android TV 14), 12 переключений карусели, <code>dumpsys gfxinfo</code>.</div>
 
-  <h2><span class="num">07</span>Установка</h2>
+  <h2><span class="num">08</span>Установка</h2>
   <p>Скачайте APK и поставьте по ADB (или с флешки любым файловым менеджером):</p>
   <pre><code>adb connect 192.168.0.39:5555
 adb install -r CleanYourTV-TwoScreens-3.4.apk</code></pre>
   <div class="note">APK подписан тем же debug-ключом, что прежние сборки CleanYourTV 3.2/3.4 — ставится обновлением
   поверх: роль «Домой», настройки и данные сохраняются. Нужен Android TV 8.0+ (minSdk 26, targetSdk 34).</div>
 
-  <h2><span class="num">08</span>Сборка из исходников</h2>
+  <h2><span class="num">09</span>Сборка из исходников</h2>
   <pre><code>git clone https://github.com/mosloboev444-hue/tv-cinema-launcher
 cd tv-cinema-launcher/launcher
 echo "sdk.dir=/путь/к/Android/Sdk" &gt; local.properties

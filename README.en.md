@@ -12,7 +12,8 @@
 
 </div>
 
-**Project site:** <https://mosloboev444-hue.github.io/tv-cinema-launcher/> ·
+**Project site:** <https://mosloboev444-hue.github.io/tv-cinema-launcher/>
+([Russian](https://mosloboev444-hue.github.io/tv-cinema-launcher/)) ·
 **Download APK:** [releases](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
 
 ![Cinema screen](screenshots/home-cinema.png)
@@ -49,6 +50,10 @@ Built for a Philips 50PUS8057/60 (Android TV 14) and tested on it. Works on Andr
 | **Cinema** — weather, glass chip, dock | **Classic** — the original 3.2 look |
 | ![Glass badge](screenshots/chip-glass.png) | ![Text badge](screenshots/chip-none.png) |
 | **“Glass” badge** (default) | **“Text only” badge** |
+
+**Carousel in motion (GIF, recorded on the TV):**
+
+![App carousel](screenshots/carousel.gif)
 
 More: [weather/focus](screenshots/home-cinema-weather-focus.png),
 [carousel frames](screenshots/carousel-animation-frames.jpg), [RuTube](screenshots/home-cinema-rutube.png),

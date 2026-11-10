@@ -12,7 +12,8 @@
 
 </div>
 
-**Сайт проекта:** <https://mosloboev444-hue.github.io/tv-cinema-launcher/> ·
+**Сайт проекта:** <https://mosloboev444-hue.github.io/tv-cinema-launcher/>
+([English](https://mosloboev444-hue.github.io/tv-cinema-launcher/en/)) ·
 **Скачать APK:** [релизы](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
 
 ![Экран «Кино»](screenshots/home-cinema.png)
@@ -53,6 +54,10 @@
 | **Плашка «Стекло»** (по умолчанию) | **Плашка «Без фона»** |
 | ![Меню плашки](screenshots/chip-style-menu.png) | ![Меню экранов](screenshots/screen-switch-menu.png) |
 | **Выбор плашки** в меню | **Переключение экранов** там же |
+
+**Карусель в движении (GIF, записано на ТВ):**
+
+![Карусель приложений](screenshots/carousel.gif)
 
 Ещё: [погода и фокус в шапке](screenshots/home-cinema-weather-focus.png),
 [кадры карусели](screenshots/carousel-animation-frames.jpg),
