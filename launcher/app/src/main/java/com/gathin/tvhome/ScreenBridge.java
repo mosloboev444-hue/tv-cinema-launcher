@@ -36,6 +36,11 @@ public final class ScreenBridge {
         activity.finish();
     }
 
+    /** Moves to the next Home screen; used by the screen-switch button on the PollyTV/WinTV screens. */
+    public static void cycle(Activity activity) {
+        switchTo(activity, ScreenProfile.next(activity));
+    }
+
     /** The apps configured for the dock, offered as the first "Favorites" list on the universal screen. */
     public static String[] defaultFavorites(Context context) {
         try {

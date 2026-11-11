@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
 [![Сайт проекта](https://img.shields.io/badge/сайт-online-6ed6ff?style=flat-square)](https://mosloboev444-hue.github.io/tv-cinema-launcher/)
-[![APK](https://img.shields.io/badge/APK-7.1%20MB-0aa1dd?style=flat-square)](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
+[![APK](https://img.shields.io/badge/APK-7.0%20MB-0aa1dd?style=flat-square)](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
 [![Android TV](https://img.shields.io/badge/Android%20TV-8.0%2B-3ddc84?style=flat-square)](https://developer.android.com/tv)
 [![DeepSeek](https://img.shields.io/badge/DeepSeek-voice-4d6bfe?style=flat-square)](https://platform.deepseek.com/)
 [![Без рекламы](https://img.shields.io/badge/ads-none-critical?style=flat-square)](#)
@@ -38,7 +38,7 @@
 
 | | |
 |---|---|
-| **Три экрана** | «Кино», «Классика» и «Универсальный»; переключение с пульта: удерживать ОК на «Настройки» → «Экран: …» (и кнопка-домик в баре универсального экрана) |
+| **Пять экранов** | «Кино», «Классика», «Универсальный», **PollyTV** и **WinTV**; переключение с пульта: удерживать ОК на «Настройки» → «Экран: …», кнопка-домик в «Универсальном» или кнопка «⇄ Экран» на новых экранах |
 | **DeepSeek-помощник** | микрофон в универсальном экране: распознавание речи, ответы DeepSeek, озвучка TTS; локальные команды работают без сети |
 | **Карусель по кругу** | все установленные приложения в кольце, 7 плиток на экране, конец списка плавно переходит в начало |
 | **Погода** | стеклянная плашка в шапке: иконка, температура, короткое описание; город по публичному IP, кэш на 30 минут |
@@ -78,13 +78,13 @@
 ## Установка
 
 **Скачать:** [APK из Releases](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest) —
-`CleanYourTV-ThreeScreens-4.1.7.apk` (7.1 МБ, versionCode 26 / 4.1.7).
+`CleanYourTV-FiveScreens-4.2.0.apk` (7.0 МБ, versionCode 27 / 4.2.0).
 
 Поставить по ADB на телевизор:
 
 ```bash
 adb connect 192.168.0.39:5555        # порт ADB на вашем ТВ
-adb install -r CleanYourTV-ThreeScreens-4.1.7.apk
+adb install -r CleanYourTV-FiveScreens-4.2.0.apk
 ```
 
 Или скопировать APK на флешку и установить любым файловым менеджером (например, X-plore).
@@ -132,6 +132,19 @@ adb install -r CleanYourTV-ThreeScreens-4.1.7.apk
   приложения (в избранное, порядок, сведения).
 - **Настройки лаунчера** (палитра): обои, тема звуков, громкость, заставка с часами, ключ DeepSeek.
 - Масштаб интерфейса рассчитан на 960 dp и подстраивается под HD, Full HD и 4K; пульт, мышь и тачпад.
+
+## Ещё два экрана: PollyTV и WinTV
+
+В меню «Экран: …» теперь пять пунктов; два новых экрана собраны из исходников PollyTV 1.1 и
+WinTV Launcher 0.2.0 и встроены в тот же APK:
+
+- **PollyTV** — тёмная атмосферная оболочка: большие часы и русская дата, горизонтальный док с
+  увеличением карточки, четыре темы (Полночь, Океан, Графит, Аметист), настройки стеклянной панели,
+  анимаций, часов/даты, звуков и размера иконок. Свои настройки экран помнит.
+- **WinTV** — Windows-стиль: строка приложений с подсветкой, часы и дата справа, нижняя панель с
+  «Пуск» (все приложения, звук, «О WinTV»), настройки и пасхалка на надписи WinTV.
+- На обоих есть кнопка **«⇄ Экран»**: переключает на следующий экран по кругу
+  Кино → Классика → Универсальный → PollyTV → WinTV → Кино.
 
 ## DeepSeek-помощник
 
@@ -243,7 +256,7 @@ adb shell am force-stop com.gathin.tvhome && adb shell input keyevent KEYCODE_HO
 ## Структура репозитория
 
 ```
-apk/            CleanYourTV-ThreeScreens-4.1.7.apk  — готовая сборка
+apk/            CleanYourTV-FiveScreens-4.2.0.apk  — готовая сборка
 launcher/       исходники (Java + Kotlin/Compose + движок AmneziaWG и libwg-go.so)
 screenshots/    скриншоты с телевизора
 wallpapers/     обои (1080p и 4K)
@@ -260,7 +273,7 @@ reference/      референс и спецификация экрана из �
 cd launcher
 echo "sdk.dir=/путь/к/Android/Sdk" > local.properties
 ./gradlew assembleRelease
-# APK: launcher/app/build/outputs/apk/release/app-release.apk (~7.1 МБ)
+# APK: launcher/app/build/outputs/apk/release/app-release.apk (~7.0 МБ)
 ```
 
 Сборка подписывается debug-ключом из `~/.android/debug.keystore` (как в upstream CleanYourTV), поэтому

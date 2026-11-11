@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
 [![Project site](https://img.shields.io/badge/site-online-6ed6ff?style=flat-square)](https://mosloboev444-hue.github.io/tv-cinema-launcher/)
-[![APK](https://img.shields.io/badge/APK-7.1%20MB-0aa1dd?style=flat-square)](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
+[![APK](https://img.shields.io/badge/APK-7.0%20MB-0aa1dd?style=flat-square)](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
 [![Android TV](https://img.shields.io/badge/Android%20TV-8.0%2B-3ddc84?style=flat-square)](https://developer.android.com/tv)
 [![DeepSeek](https://img.shields.io/badge/DeepSeek-voice-4d6bfe?style=flat-square)](https://platform.deepseek.com/)
 [![No ads](https://img.shields.io/badge/ads-none-critical?style=flat-square)](#)
@@ -72,11 +72,11 @@ More: [weather/focus](screenshots/home-cinema-weather-focus.png),
 ## Install
 
 Download the APK from [Releases](https://github.com/mosloboev444-hue/tv-cinema-launcher/releases/latest)
-(`CleanYourTV-ThreeScreens-4.1.7.apk`, 7.1 MB, versionCode 26 / 4.1.7) and install it:
+(`CleanYourTV-FiveScreens-4.2.0.apk`, 7.0 MB, versionCode 27 / 4.2.0) and install it:
 
 ```bash
 adb connect 192.168.0.39:5555
-adb install -r CleanYourTV-ThreeScreens-4.1.7.apk
+adb install -r CleanYourTV-FiveScreens-4.2.0.apk
 ```
 
 It is signed with the same debug key as previous CleanYourTV 3.2/3.4 builds, so it installs as an update:
