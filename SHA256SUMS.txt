@@ -1,2 +1,2 @@
-a60ab712a05aafc579e1d8c525a94d23ee3e5d2dcc5c4c9a082fe33abe1d0b5f *apk/CleanYourTV-ThreeScreens-4.1.6.apk
+1aa7b880a3cd780c0092250f329fae62c46f974bfa93cba05bd1f4bf4505c043 *apk/CleanYourTV-ThreeScreens-4.1.7.apk
 be7424646d106416ef10a8073a38e77aea8c8bec201366e1af3d3ddd4c650ea0 *patch/karaoke-3.4.patch
